@@ -1,6 +1,7 @@
 package com.antdevrealm.jobpilot.service;
 
 import com.antdevrealm.jobpilot.enums.StatusEnum;
+import com.antdevrealm.jobpilot.exception.ResourceNotFoundException;
 import com.antdevrealm.jobpilot.model.dto.JobApplicationDTO;
 import com.antdevrealm.jobpilot.model.dto.JobApplicationResponseDTO;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
@@ -30,7 +31,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     @Override
     public JobApplicationResponseDTO getById(Long id) {
-        return mapToResponseDTO(jobRepo.findById(id).orElse(new JobApplicationEntity()));
+        return mapToResponseDTO(jobRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("JobApplication with ID: " + id + " not found")));
     }
 
     @Override
