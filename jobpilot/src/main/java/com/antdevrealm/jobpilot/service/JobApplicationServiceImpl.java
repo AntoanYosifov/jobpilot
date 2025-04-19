@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class JobApplicationServiceImpl implements JobApplicationService {
@@ -21,24 +22,42 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     }
 
     @Override
+    public List<JobApplicationResponseDTO> getAll() {
+        List<JobApplicationEntity> allJobEntities = jobRepo.findAll();
+
+        return allJobEntities.stream().map(this::mapToResponseDTO).toList();
+    }
+
+    @Override
+    public JobApplicationResponseDTO getById(Long id) {
+        return mapToResponseDTO(jobRepo.findById(id).orElse(new JobApplicationEntity()));
+    }
+
+    @Override
     public JobApplicationResponseDTO apply(JobApplicationDTO dto) {
-        JobApplicationEntity job = new JobApplicationEntity(
+        JobApplicationEntity saved = jobRepo.save(mapToEntity(dto));
+
+        return mapToResponseDTO(saved);
+    }
+
+    private JobApplicationResponseDTO mapToResponseDTO(JobApplicationEntity entity) {
+        return new JobApplicationResponseDTO(
+                entity.getId(),
+                entity.getCompany(),
+                entity.getPosition(),
+                entity.getStatus().toString(),
+                entity.getAppliedOn().toString(),
+                entity.getFeedback()
+        );
+    }
+
+    private JobApplicationEntity mapToEntity(JobApplicationDTO dto) {
+        return new JobApplicationEntity(
                 dto.company(),
                 dto.position(),
                 StatusEnum.valueOf(dto.status().toUpperCase()),
                 LocalDate.now()
         );
-
-        JobApplicationEntity saved = jobRepo.save(job);
-
-        return new JobApplicationResponseDTO(
-                saved.getId(),
-                saved.getCompany(),
-                saved.getPosition(),
-                saved.getStatus().name(),
-                saved.getAppliedOn().toString(),
-                saved.getFeedback()
-        );
-
     }
+
 }

@@ -23,7 +23,6 @@ public class JobApplicationEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
-    // Will refactor when the actual structure (e.g. Interview entity, enums, etc.) becomes clear.
     @NonNull
     @Column(nullable = false)
     @ToString.Include
@@ -39,7 +38,7 @@ public class JobApplicationEntity {
     @Enumerated(EnumType.STRING)
     private StatusEnum status;
 
-    @Column(name = "applied_on")
+    @Column(name = "applied_on", nullable = false)
     @NonNull
     @ToString.Include
     private LocalDate appliedOn;
