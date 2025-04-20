@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+
 @Service
 public class JobApplicationServiceImpl implements JobApplicationService {
 
@@ -36,19 +37,40 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     }
 
     @Override
+    public JobApplicationResponseDTO apply(JobApplicationDTO dto) {
+        JobApplicationEntity saved = jobRepo.save(mapToEntity(dto));
+
+        return mapToResponseDTO(saved);
+    }
+
+    @Override
+    public JobApplicationResponseDTO updateById(Long id, JobApplicationDTO dto) {
+
+        JobApplicationEntity forUpdate = jobRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("JobApplication with ID: " + id + " not found"));
+
+        if(dto.company() != null) {
+            forUpdate.setCompany(dto.company());
+        }
+        if(dto.position() != null) {
+            forUpdate.setPosition(dto.position());
+        }
+        if(dto.status() != null) {
+            forUpdate.setStatus(StatusEnum.valueOf(dto.status().toUpperCase()));
+        }
+
+        JobApplicationEntity updated = jobRepo.save(forUpdate);
+
+        return mapToResponseDTO(updated);
+    }
+
+    @Override
     public void deleteById(Long id) {
        if(!jobRepo.existsById(id)) {
            throw new ResourceNotFoundException("JobApplication with ID: " + id + " not found");
        }
 
        jobRepo.deleteById(id);
-    }
-
-    @Override
-    public JobApplicationResponseDTO apply(JobApplicationDTO dto) {
-        JobApplicationEntity saved = jobRepo.save(mapToEntity(dto));
-
-        return mapToResponseDTO(saved);
     }
 
     private JobApplicationResponseDTO mapToResponseDTO(JobApplicationEntity entity) {

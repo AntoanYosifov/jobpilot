@@ -14,4 +14,6 @@ public interface JobApplicationService {
     JobApplicationResponseDTO getById(Long id);
 
     void deleteById(Long id);
+
+    JobApplicationResponseDTO updateById(Long id, JobApplicationDTO dto);
 }

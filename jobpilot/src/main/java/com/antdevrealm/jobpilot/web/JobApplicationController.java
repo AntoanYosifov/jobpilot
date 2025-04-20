@@ -41,11 +41,18 @@ public class JobApplicationController {
                 .body(savedApp);
     }
 
-    @DeleteMapping("{id}")
+    @PutMapping("/{id}")
+    public ResponseEntity<JobApplicationResponseDTO> updateById(@PathVariable Long id, @RequestBody JobApplicationDTO dto) {
+        JobApplicationResponseDTO updated = jobService.updateById(id, dto);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         jobService.deleteById(id);
 
         return ResponseEntity.noContent().build();
-
     }
+
+
 }
