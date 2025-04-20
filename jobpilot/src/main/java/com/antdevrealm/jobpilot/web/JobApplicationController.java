@@ -40,4 +40,12 @@ public class JobApplicationController {
         return ResponseEntity.created(location)
                 .body(savedApp);
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        jobService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+
+    }
 }

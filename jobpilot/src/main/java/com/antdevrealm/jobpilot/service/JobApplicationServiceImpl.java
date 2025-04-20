@@ -36,6 +36,15 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     }
 
     @Override
+    public void deleteById(Long id) {
+       if(!jobRepo.existsById(id)) {
+           throw new ResourceNotFoundException("JobApplication with ID: " + id + " not found");
+       }
+
+       jobRepo.deleteById(id);
+    }
+
+    @Override
     public JobApplicationResponseDTO apply(JobApplicationDTO dto) {
         JobApplicationEntity saved = jobRepo.save(mapToEntity(dto));
 

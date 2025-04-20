@@ -12,4 +12,6 @@ public interface JobApplicationService {
     List<JobApplicationResponseDTO> getAll();
 
     JobApplicationResponseDTO getById(Long id);
+
+    void deleteById(Long id);
 }
