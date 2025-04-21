@@ -1,5 +1,6 @@
 package com.antdevrealm.jobpilot.service;
 
+import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.model.dto.JobApplicationDTO;
 import com.antdevrealm.jobpilot.model.dto.JobApplicationResponseDTO;
 
@@ -16,4 +17,6 @@ public interface JobApplicationService {
     void deleteById(Long id);
 
     JobApplicationResponseDTO updateById(Long id, JobApplicationDTO dto);
+
+    List<JobApplicationResponseDTO> getByStatus(StatusEnum statusEnum);
 }

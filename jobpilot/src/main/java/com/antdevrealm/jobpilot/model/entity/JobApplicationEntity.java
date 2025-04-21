@@ -43,6 +43,7 @@ public class JobApplicationEntity {
     @ToString.Include
     private LocalDate appliedOn;
 
+
     private String feedback;
 
 }

@@ -1,13 +1,17 @@
 package com.antdevrealm.jobpilot.web;
 
+import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.model.dto.JobApplicationDTO;
 import com.antdevrealm.jobpilot.model.dto.JobApplicationResponseDTO;
 import com.antdevrealm.jobpilot.service.JobApplicationService;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -21,9 +25,25 @@ public class JobApplicationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<JobApplicationResponseDTO>> getAll () {
-        List<JobApplicationResponseDTO> allJobApp = jobService.getAll();
-        return ResponseEntity.ok(allJobApp);
+    public ResponseEntity<List<JobApplicationResponseDTO>> getAll (
+    @RequestParam(required = false) String status) {
+        List<JobApplicationResponseDTO> results;
+        if(status != null) {
+            StatusEnum statusEnum;
+            try {
+                statusEnum = StatusEnum.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                List<String> validStatuses = Arrays.stream(StatusEnum.values()).map(Enum::name)
+                        .toList();
+
+                throw new com.antdevrealm.jobpilot.exception.BadRequestException("Invalid status value: " + status, validStatuses);
+            }
+            results = jobService.getByStatus(statusEnum);
+        } else {
+            results = jobService.getAll();
+        }
+
+        return ResponseEntity.ok(results);
     }
 
     @GetMapping("/{id}")

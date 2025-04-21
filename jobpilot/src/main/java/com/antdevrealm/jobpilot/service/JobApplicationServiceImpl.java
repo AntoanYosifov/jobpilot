@@ -31,6 +31,14 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     }
 
     @Override
+    public List<JobApplicationResponseDTO> getByStatus(StatusEnum statusEnum) {
+        return jobRepo.findAllByStatus(statusEnum)
+                .stream()
+                .map(this::mapToResponseDTO).toList();
+    }
+
+
+    @Override
     public JobApplicationResponseDTO getById(Long id) {
         return mapToResponseDTO(jobRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("JobApplication with ID: " + id + " not found")));
@@ -63,6 +71,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
         return mapToResponseDTO(updated);
     }
+
 
     @Override
     public void deleteById(Long id) {
