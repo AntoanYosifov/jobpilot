@@ -3,14 +3,14 @@ package com.antdevrealm.jobpilot.web;
 import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.model.dto.JobApplicationDTO;
 import com.antdevrealm.jobpilot.model.dto.JobApplicationResponseDTO;
+import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
 import com.antdevrealm.jobpilot.service.JobApplicationService;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,9 +25,16 @@ public class JobApplicationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<JobApplicationResponseDTO>> getAll (
-    @RequestParam(required = false) String status) {
-        List<JobApplicationResponseDTO> results;
+    public ResponseEntity<PaginatedResponse<JobApplicationResponseDTO>> getAll (
+    @RequestParam(required = false) String status,
+    @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "5") int size) {
+
+        int maxSize = 50;
+        page = Math.max(0, page);
+        size = Math.min(Math.max(1, size), maxSize);
+
+        PaginatedResponse<JobApplicationResponseDTO> response;
         if(status != null) {
             StatusEnum statusEnum;
             try {
@@ -38,12 +45,14 @@ public class JobApplicationController {
 
                 throw new com.antdevrealm.jobpilot.exception.BadRequestException("Invalid status value: " + status, validStatuses);
             }
-            results = jobService.getByStatus(statusEnum);
+            response = jobService.getByStatus(statusEnum, page, size);
         } else {
-            results = jobService.getAll();
+            response = jobService.getAll(page, size);
         }
 
-        return ResponseEntity.ok(results);
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(response.totalElements()))
+                .body(response);
     }
 
     @GetMapping("/{id}")

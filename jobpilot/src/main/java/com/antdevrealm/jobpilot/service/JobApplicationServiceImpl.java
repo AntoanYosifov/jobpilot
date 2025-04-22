@@ -4,9 +4,14 @@ import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.exception.ResourceNotFoundException;
 import com.antdevrealm.jobpilot.model.dto.JobApplicationDTO;
 import com.antdevrealm.jobpilot.model.dto.JobApplicationResponseDTO;
+import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
 import com.antdevrealm.jobpilot.repository.JobApplicationRepository;
+import com.antdevrealm.jobpilot.util.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,17 +29,20 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     }
 
     @Override
-    public List<JobApplicationResponseDTO> getAll() {
-        List<JobApplicationEntity> allJobEntities = jobRepo.findAll();
+    public PaginatedResponse<JobApplicationResponseDTO> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
 
-        return allJobEntities.stream().map(this::mapToResponseDTO).toList();
+        Page<JobApplicationEntity> jobPage = jobRepo.findAll(pageable);
+
+        return PaginationUtil.wrap(jobPage.map(this::mapToResponseDTO));
     }
 
     @Override
-    public List<JobApplicationResponseDTO> getByStatus(StatusEnum statusEnum) {
-        return jobRepo.findAllByStatus(statusEnum)
-                .stream()
-                .map(this::mapToResponseDTO).toList();
+    public PaginatedResponse<JobApplicationResponseDTO> getByStatus(StatusEnum statusEnum, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<JobApplicationEntity> pageByStatus = jobRepo.findAllByStatus(statusEnum, pageable);
+        return PaginationUtil.wrap(pageByStatus.map(this::mapToResponseDTO));
     }
 
 
