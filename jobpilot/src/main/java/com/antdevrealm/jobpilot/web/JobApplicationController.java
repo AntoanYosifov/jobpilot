@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,9 +61,21 @@ public class JobApplicationController {
         return ResponseEntity.ok(jobAppById);
     }
 
-    @GetMapping("/search/company")
-    public ResponseEntity<List<JobApplicationResponseDTO>> searchByCompany(@RequestParam String companyName) {
-        List<JobApplicationResponseDTO> results = jobService.getByCompany(companyName);
+    @GetMapping("/search")
+    public ResponseEntity<List<JobApplicationResponseDTO>> search(
+            @RequestParam(required = false) String companyName,
+            @RequestParam(required = false) String positionName) {
+
+        List<JobApplicationResponseDTO> results = new ArrayList<>();
+
+       if(companyName != null) {
+           results = jobService.getByCompany(companyName);
+       }
+
+       if(positionName != null) {
+           results = jobService.getByPosition(positionName);
+       }
+
         return ResponseEntity.ok(results);
     }
 

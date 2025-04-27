@@ -25,4 +25,5 @@ public interface JobApplicationRepository extends JpaRepository<JobApplicationEn
     Page<JobApplicationEntity> findAllByStatus(StatusEnum statusEnum, Pageable pageable);
 
     List<JobApplicationEntity> searchAllByCompanyIgnoreCase(String companyName);
+    List<JobApplicationEntity> searchAllByPositionIgnoreCase(String positionName);
 }
