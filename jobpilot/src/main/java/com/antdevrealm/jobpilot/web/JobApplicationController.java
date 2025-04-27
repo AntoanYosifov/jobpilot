@@ -6,7 +6,6 @@ import com.antdevrealm.jobpilot.model.dto.JobApplicationResponseDTO;
 import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
 import com.antdevrealm.jobpilot.service.JobApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,17 +24,17 @@ public class JobApplicationController {
     }
 
     @GetMapping
-    public ResponseEntity<PaginatedResponse<JobApplicationResponseDTO>> getAll (
-    @RequestParam(required = false) String status,
-    @RequestParam(defaultValue = "0") int page,
-    @RequestParam(defaultValue = "5") int size) {
+    public ResponseEntity<PaginatedResponse<JobApplicationResponseDTO>> getAll(
+            @RequestParam(required = false) String status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
 
         int maxSize = 50;
         page = Math.max(0, page);
         size = Math.min(Math.max(1, size), maxSize);
 
         PaginatedResponse<JobApplicationResponseDTO> response;
-        if(status != null) {
+        if (status != null) {
             StatusEnum statusEnum;
             try {
                 statusEnum = StatusEnum.valueOf(status.toUpperCase());
@@ -59,7 +58,12 @@ public class JobApplicationController {
     public ResponseEntity<JobApplicationResponseDTO> getById(@PathVariable Long id) {
         JobApplicationResponseDTO jobAppById = jobService.getById(id);
         return ResponseEntity.ok(jobAppById);
+    }
 
+    @GetMapping("/search/company")
+    public ResponseEntity<List<JobApplicationResponseDTO>> searchByCompany(@RequestParam String companyName) {
+        List<JobApplicationResponseDTO> results = jobService.getByCompany(companyName);
+        return ResponseEntity.ok(results);
     }
 
     @PostMapping

@@ -53,6 +53,14 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     }
 
     @Override
+    public List<JobApplicationResponseDTO> getByCompany(String companyName) {
+        return jobRepo.searchAllByCompanyIgnoreCase(companyName)
+                .stream()
+                .map(this::mapToResponseDTO)
+                .toList();
+    }
+
+    @Override
     public JobApplicationResponseDTO apply(JobApplicationDTO dto) {
         JobApplicationEntity saved = jobRepo.save(mapToEntity(dto));
 

@@ -4,7 +4,6 @@ import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.model.dto.JobApplicationDTO;
 import com.antdevrealm.jobpilot.model.dto.JobApplicationResponseDTO;
 import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -21,4 +20,6 @@ public interface JobApplicationService {
     JobApplicationResponseDTO updateById(Long id, JobApplicationDTO dto);
 
     PaginatedResponse<JobApplicationResponseDTO> getByStatus(StatusEnum statusEnum, int page, int size);
+
+    List<JobApplicationResponseDTO> getByCompany(String companyName);
 }

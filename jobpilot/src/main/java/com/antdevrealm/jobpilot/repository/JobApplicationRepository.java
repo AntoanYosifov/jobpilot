@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface JobApplicationRepository extends JpaRepository<JobApplicationEntity, Long> {
     /**
@@ -21,4 +23,6 @@ public interface JobApplicationRepository extends JpaRepository<JobApplicationEn
     Page<JobApplicationEntity> findAll(@NonNull Pageable pageable);
 
     Page<JobApplicationEntity> findAllByStatus(StatusEnum statusEnum, Pageable pageable);
+
+    List<JobApplicationEntity> searchAllByCompanyIgnoreCase(String companyName);
 }
