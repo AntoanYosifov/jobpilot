@@ -24,4 +24,11 @@ public interface JobApplicationService {
     List<JobApplicationResponseDTO> getByCompany(String companyName);
 
     List<JobApplicationResponseDTO> getByPosition(String positionName);
+
+    PaginatedResponse<JobApplicationResponseDTO> searchApplications(StatusEnum statusEnum,
+                                                                    String companyName,
+                                                                    String positionName,
+                                                                    String sortDir,
+                                                                    int page,
+                                                                    int size);
 }

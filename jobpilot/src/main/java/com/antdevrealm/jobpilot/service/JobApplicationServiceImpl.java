@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -69,6 +70,26 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     }
 
     @Override
+    public PaginatedResponse<JobApplicationResponseDTO> searchApplications(StatusEnum statusEnum,
+                                                                           String companyName,
+                                                                           String positionName,
+                                                                           String sortDir,
+                                                                           int page,
+                                                                           int size) {
+        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, "appliedOn");
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<JobApplicationEntity> applicationEntityPage = jobRepo.searchApplications(
+                statusEnum, companyName,positionName, pageable);
+
+        Page<JobApplicationResponseDTO> dtoPage = applicationEntityPage.map(this::mapToResponseDTO);
+
+       return PaginationUtil.wrap(dtoPage);
+    }
+
+    @Override
     public JobApplicationResponseDTO apply(JobApplicationDTO dto) {
         JobApplicationEntity saved = jobRepo.save(mapToEntity(dto));
 
@@ -92,7 +113,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         }
 
         JobApplicationEntity updated = jobRepo.save(forUpdate);
-
         return mapToResponseDTO(updated);
     }
 

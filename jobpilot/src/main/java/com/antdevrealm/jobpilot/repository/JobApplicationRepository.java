@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface JobApplicationRepository extends JpaRepository<JobApplicationEntity, Long> {
+public interface JobApplicationRepository extends JpaRepository<JobApplicationEntity, Long>, JobApplicationRepositoryCustom {
     /**
      * Spring Data repositories are non-null by default due to the @NonNullApi package-level annotation.
      * This method is explicitly marked with {@link org.springframework.lang.NonNull}
@@ -26,4 +26,5 @@ public interface JobApplicationRepository extends JpaRepository<JobApplicationEn
 
     List<JobApplicationEntity> searchAllByCompanyIgnoreCase(String companyName);
     List<JobApplicationEntity> searchAllByPositionIgnoreCase(String positionName);
+
 }

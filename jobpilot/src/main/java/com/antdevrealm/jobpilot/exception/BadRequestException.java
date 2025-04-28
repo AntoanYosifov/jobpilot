@@ -13,4 +13,8 @@ public class BadRequestException extends RuntimeException{
         this.validValues = validValues;
     }
 
+    public BadRequestException(String message) {
+        super(message);
+        this.validValues = null;
+    }
 }
