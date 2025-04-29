@@ -8,6 +8,7 @@ import com.antdevrealm.jobpilot.model.dto.JobApplicationResponseDTO;
 import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
 import com.antdevrealm.jobpilot.service.JobApplicationService;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +69,7 @@ public class JobApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<JobApplicationResponseDTO> create(@RequestBody JobApplicationDTO dto) {
+    public ResponseEntity<JobApplicationResponseDTO> create(@RequestBody @Valid JobApplicationDTO dto) {
         JobApplicationResponseDTO savedApp = jobService.apply(dto);
         URI location = URI.create("/api/applications/" + savedApp.id());
         return ResponseEntity.created(location)

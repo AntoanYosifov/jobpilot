@@ -26,6 +26,7 @@ public class JobApplicationEntity {
     @NonNull
     @Column(nullable = false)
     @ToString.Include
+
     private String company;
 
     @NonNull
@@ -44,5 +45,4 @@ public class JobApplicationEntity {
     private LocalDate appliedOn;
 
     private String feedback;
-
 }

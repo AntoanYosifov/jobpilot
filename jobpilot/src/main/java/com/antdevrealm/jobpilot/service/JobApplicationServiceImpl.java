@@ -16,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 
 
 @Service
@@ -59,7 +58,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     @Override
     public JobApplicationResponseDTO apply(JobApplicationDTO dto) {
         JobApplicationEntity saved = jobRepo.save(mapToEntity(dto));
-
         return mapToResponseDTO(saved);
     }
 
