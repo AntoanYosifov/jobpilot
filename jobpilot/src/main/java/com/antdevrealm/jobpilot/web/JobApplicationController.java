@@ -34,7 +34,7 @@ public class JobApplicationController {
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String companyName,
             @RequestParam(required = false) String positionName,
-            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam(defaultValue = "desc") String sortDir,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) throws BadRequestException {
 

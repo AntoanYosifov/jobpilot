@@ -22,26 +22,17 @@ public class JobApplicationRepositoryCustomImpl implements JobApplicationReposit
 
     @Override
     public Page<JobApplicationEntity> searchApplications(StatusEnum statusEnum, String companyName, String positionName, Pageable pageable) {
-        StringBuilder jpql = getJpql(statusEnum, companyName, positionName, pageable);
+        StringBuilder selectJpql = getSelectJpql(statusEnum, companyName, positionName, pageable);
 
-        TypedQuery<JobApplicationEntity> query = entityManager.createQuery(jpql.toString(), JobApplicationEntity.class);
-
+        TypedQuery<JobApplicationEntity> query = entityManager.createQuery(selectJpql.toString(), JobApplicationEntity.class);
         setQueryParameters(statusEnum, companyName, positionName, query);
-
         query.setFirstResult((int) pageable.getOffset());
         query.setMaxResults(pageable.getPageSize());
 
         List<JobApplicationEntity> resultList = query.getResultList();
-        String baseJpql = jpql.toString();
-        int orderByIndex = baseJpql.toLowerCase().lastIndexOf("order by");
 
-        if (orderByIndex != -1) {
-            baseJpql = baseJpql.substring(0, orderByIndex);
-        }
-
-        String countJpql = baseJpql.replace("SELECT ja", "SELECT COUNT(ja)");
-        TypedQuery<Long> countQuery = entityManager.createQuery(countJpql, Long.class);
-
+        StringBuilder countJpql = getCountJpql(statusEnum, companyName, positionName);
+        TypedQuery<Long> countQuery = entityManager.createQuery(countJpql.toString(), Long.class);
         setQueryParameters(statusEnum, companyName, positionName, countQuery);
 
         Long total = countQuery.getSingleResult();
@@ -61,7 +52,7 @@ public class JobApplicationRepositoryCustomImpl implements JobApplicationReposit
         }
     }
 
-    private static StringBuilder getJpql(StatusEnum statusEnum, String companyName, String positionName, Pageable pageable) {
+    private static StringBuilder getSelectJpql(StatusEnum statusEnum, String companyName, String positionName, Pageable pageable) {
         StringBuilder jpql = new StringBuilder("SELECT ja FROM JobApplicationEntity ja WHERE 1=1");
 
         if(statusEnum != null) {
@@ -82,6 +73,22 @@ public class JobApplicationRepositoryCustomImpl implements JobApplicationReposit
         });
 
         jpql.setLength(jpql.length() - 2);
+
+        return jpql;
+    }
+
+    private static StringBuilder getCountJpql(StatusEnum statusEnum, String companyName, String positionName) {
+        StringBuilder jpql = new StringBuilder("SELECT COUNT(ja) FROM JobApplicationEntity ja WHERE 1=1");
+
+        if (statusEnum != null) {
+            jpql.append(" AND ja.status = :status");
+        }
+        if (companyName != null && !companyName.isEmpty()) {
+            jpql.append(" AND LOWER(ja.company) LIKE LOWER(CONCAT('%', :company, '%'))");
+        }
+        if (positionName != null && !positionName.isEmpty()) {
+            jpql.append(" AND LOWER(ja.position) LIKE LOWER(CONCAT('%', :position, '%'))");
+        }
 
         return jpql;
     }

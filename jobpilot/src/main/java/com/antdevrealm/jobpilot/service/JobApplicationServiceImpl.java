@@ -30,46 +30,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     }
 
     @Override
-    public PaginatedResponse<JobApplicationResponseDTO> getAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<JobApplicationEntity> jobPage = jobRepo.findAll(pageable);
-
-        return PaginationUtil.wrap(jobPage.map(this::mapToResponseDTO));
-    }
-
-    @Override
-    public PaginatedResponse<JobApplicationResponseDTO> getByStatus(StatusEnum statusEnum, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<JobApplicationEntity> pageByStatus = jobRepo.findAllByStatus(statusEnum, pageable);
-        return PaginationUtil.wrap(pageByStatus.map(this::mapToResponseDTO));
-    }
-
-
-    @Override
-    public JobApplicationResponseDTO getById(Long id) {
-        return mapToResponseDTO(jobRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("JobApplication with ID: " + id + " not found")));
-    }
-
-    @Override
-    public List<JobApplicationResponseDTO> getByCompany(String companyName) {
-        return jobRepo.searchAllByCompanyIgnoreCase(companyName)
-                .stream()
-                .map(this::mapToResponseDTO)
-                .toList();
-    }
-
-    @Override
-    public List<JobApplicationResponseDTO> getByPosition(String positionName) {
-        return jobRepo.searchAllByPositionIgnoreCase(positionName)
-                .stream()
-                .map(this::mapToResponseDTO)
-                .toList();
-    }
-
-    @Override
     public PaginatedResponse<JobApplicationResponseDTO> searchApplications(StatusEnum statusEnum,
                                                                            String companyName,
                                                                            String positionName,
@@ -82,11 +42,18 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<JobApplicationEntity> applicationEntityPage = jobRepo.searchApplications(
-                statusEnum, companyName,positionName, pageable);
+                statusEnum, companyName, positionName, pageable);
 
         Page<JobApplicationResponseDTO> dtoPage = applicationEntityPage.map(this::mapToResponseDTO);
 
-       return PaginationUtil.wrap(dtoPage);
+        return PaginationUtil.wrap(dtoPage);
+    }
+
+
+    @Override
+    public JobApplicationResponseDTO getById(Long id) {
+        return mapToResponseDTO(jobRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("JobApplication with ID: " + id + " not found")));
     }
 
     @Override
@@ -102,13 +69,13 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         JobApplicationEntity forUpdate = jobRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("JobApplication with ID: " + id + " not found"));
 
-        if(dto.company() != null) {
+        if (dto.company() != null) {
             forUpdate.setCompany(dto.company());
         }
-        if(dto.position() != null) {
+        if (dto.position() != null) {
             forUpdate.setPosition(dto.position());
         }
-        if(dto.status() != null) {
+        if (dto.status() != null) {
             forUpdate.setStatus(StatusEnum.valueOf(dto.status().toUpperCase()));
         }
 
@@ -119,11 +86,11 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     @Override
     public void deleteById(Long id) {
-       if(!jobRepo.existsById(id)) {
-           throw new ResourceNotFoundException("JobApplication with ID: " + id + " not found");
-       }
+        if (!jobRepo.existsById(id)) {
+            throw new ResourceNotFoundException("JobApplication with ID: " + id + " not found");
+        }
 
-       jobRepo.deleteById(id);
+        jobRepo.deleteById(id);
     }
 
     private JobApplicationResponseDTO mapToResponseDTO(JobApplicationEntity entity) {
@@ -145,5 +112,4 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 LocalDate.now()
         );
     }
-
 }
