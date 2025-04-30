@@ -1,4 +1,4 @@
-package com.antdevrealm.jobpilot.repository;
+package com.antdevrealm.jobpilot.repository.jobapplication;
 
 import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;

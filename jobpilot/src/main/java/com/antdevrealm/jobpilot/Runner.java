@@ -1,8 +1,10 @@
 package com.antdevrealm.jobpilot;
 
 import com.antdevrealm.jobpilot.enums.StatusEnum;
+import com.antdevrealm.jobpilot.model.dto.user.UserRegistrationDTO;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
-import com.antdevrealm.jobpilot.repository.JobApplicationRepository;
+import com.antdevrealm.jobpilot.repository.jobapplication.JobApplicationRepository;
+import com.antdevrealm.jobpilot.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +15,11 @@ import java.util.List;
 public class Runner implements CommandLineRunner {
 
     private final JobApplicationRepository repo;
+    private final UserService userService;
 
-    public Runner(JobApplicationRepository repo) {
+    public Runner(JobApplicationRepository repo, UserService userService) {
         this.repo = repo;
+        this.userService = userService;
     }
 
     @Override
@@ -47,5 +51,9 @@ public class Runner implements CommandLineRunner {
             repo.saveAll(jobs);
             System.out.println("Seeded 20 job applications.");
         }
+
+        System.out.println(userService.register(new UserRegistrationDTO("Antoan", "Yosifov",
+                "got_hired@mail.com",
+                "ifuckinggothiredbecauseiamawesome")));
     }
 }

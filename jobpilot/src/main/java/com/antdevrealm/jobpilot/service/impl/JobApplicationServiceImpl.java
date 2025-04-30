@@ -1,12 +1,13 @@
-package com.antdevrealm.jobpilot.service;
+package com.antdevrealm.jobpilot.service.impl;
 
 import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.exception.ResourceNotFoundException;
-import com.antdevrealm.jobpilot.model.dto.JobApplicationDTO;
-import com.antdevrealm.jobpilot.model.dto.JobApplicationResponseDTO;
+import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationDTO;
+import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationResponseDTO;
 import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
-import com.antdevrealm.jobpilot.repository.JobApplicationRepository;
+import com.antdevrealm.jobpilot.repository.jobapplication.JobApplicationRepository;
+import com.antdevrealm.jobpilot.service.JobApplicationService;
 import com.antdevrealm.jobpilot.util.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

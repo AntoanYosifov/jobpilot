@@ -1,4 +1,4 @@
-package com.antdevrealm.jobpilot.model.dto;
+package com.antdevrealm.jobpilot.model.dto.jobapplication;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

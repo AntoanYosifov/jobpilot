@@ -1,9 +1,9 @@
-package com.antdevrealm.jobpilot.repository.impl;
+package com.antdevrealm.jobpilot.repository.jobapplication.impl;
 
 
 import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
-import com.antdevrealm.jobpilot.repository.JobApplicationRepositoryCustom;
+import com.antdevrealm.jobpilot.repository.jobapplication.JobApplicationRepositoryCustom;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;

@@ -1,11 +1,9 @@
 package com.antdevrealm.jobpilot.service;
 
 import com.antdevrealm.jobpilot.enums.StatusEnum;
-import com.antdevrealm.jobpilot.model.dto.JobApplicationDTO;
-import com.antdevrealm.jobpilot.model.dto.JobApplicationResponseDTO;
+import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationDTO;
+import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationResponseDTO;
 import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
-
-import java.util.List;
 
 
 public interface JobApplicationService {

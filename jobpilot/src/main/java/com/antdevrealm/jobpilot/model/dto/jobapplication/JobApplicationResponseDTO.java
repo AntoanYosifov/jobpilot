@@ -1,4 +1,4 @@
-package com.antdevrealm.jobpilot.model.dto;
+package com.antdevrealm.jobpilot.model.dto.jobapplication;
 
 public record JobApplicationResponseDTO(
         Long id,

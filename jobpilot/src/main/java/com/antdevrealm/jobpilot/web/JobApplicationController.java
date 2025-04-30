@@ -3,8 +3,8 @@ package com.antdevrealm.jobpilot.web;
 import com.antdevrealm.jobpilot.enums.StatusEnum;
 
 import com.antdevrealm.jobpilot.exception.BadRequestException;
-import com.antdevrealm.jobpilot.model.dto.JobApplicationDTO;
-import com.antdevrealm.jobpilot.model.dto.JobApplicationResponseDTO;
+import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationDTO;
+import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationResponseDTO;
 import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
 import com.antdevrealm.jobpilot.service.JobApplicationService;
 
@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

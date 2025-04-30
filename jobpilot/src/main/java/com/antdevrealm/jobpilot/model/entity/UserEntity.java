@@ -1,11 +1,7 @@
 package com.antdevrealm.jobpilot.model.entity;
 
-import com.antdevrealm.jobpilot.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.NonNull;
-
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -15,35 +11,30 @@ import java.time.LocalDate;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 
 @Entity
-@Table(name = "job_applications")
-public class JobApplicationEntity {
+@Table(name = "users")
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ToString.Include
     @EqualsAndHashCode.Include
     private Long id;
 
+    @NonNull
+    @ToString.Include
+    @Column(name = "first_name")
+    private String firstName;
 
     @NonNull
     @ToString.Include
-    @Column(nullable = false)
-    private String company;
+    @Column(name = "last_name")
+    private String lastName;
 
     @NonNull
-    @ToString.Include
     @Column(nullable = false)
-    private String position;
+    private String email;
 
     @NonNull
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatusEnum status;
+    private String password;
 
-
-    @NonNull
-    @ToString.Include
-    @Column(name = "applied_on", nullable = false)
-    private LocalDate appliedOn;
-
-    private String feedback;
 }
