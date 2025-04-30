@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,6 +34,11 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO getById(Long id) {
         UserEntity entityById = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with ID: " + id + " does not exist"));
         return mapToResponseDTO(entityById);
+    }
+
+    @Override
+    public List<UserResponseDTO> getAll() {
+        return userRepo.findAll().stream().map(UserServiceImpl::mapToResponseDTO).toList();
     }
 
     private UserEntity mapToEntity(UserRegistrationDTO registrationDTO) {
