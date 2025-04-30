@@ -5,4 +5,7 @@ import com.antdevrealm.jobpilot.model.dto.user.UserResponseDTO;
 
 public interface UserService {
     UserResponseDTO register(UserRegistrationDTO registerDTO);
+
+    UserResponseDTO getById(Long id);
+
 }

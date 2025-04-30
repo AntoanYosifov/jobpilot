@@ -52,8 +52,8 @@ public class Runner implements CommandLineRunner {
             System.out.println("Seeded 20 job applications.");
         }
 
-        System.out.println(userService.register(new UserRegistrationDTO("Antoan", "Yosifov",
-                "got_hired@mail.com",
-                "ifuckinggothiredbecauseiamawesome")));
+//        System.out.println(userService.register(new UserRegistrationDTO("Antoan", "Yosifov",
+//                "got_hired@mail.com",
+//                "ifuckinggothiredbecauseiamawesome")));
     }
 }
