@@ -1,14 +1,13 @@
 package com.antdevrealm.jobpilot.web;
 
+import com.antdevrealm.jobpilot.model.dto.user.UserRegistrationDTO;
 import com.antdevrealm.jobpilot.model.dto.user.UserResponseDTO;
 import com.antdevrealm.jobpilot.service.UserService;
-import org.apache.coyote.Response;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -31,5 +30,14 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> getById(@PathVariable Long id) {
         UserResponseDTO responseDTO = userService.getById(id);
         return ResponseEntity.ok(responseDTO);
+    }
+
+    @PostMapping()
+    public ResponseEntity<UserResponseDTO> registerUser(@RequestBody @Valid UserRegistrationDTO dto) {
+        UserResponseDTO registeredDTO = userService.register(dto);
+        URI location = URI.create("/api/users/" + registeredDTO.id());
+
+        return ResponseEntity.created(location)
+                .body(registeredDTO);
     }
 }

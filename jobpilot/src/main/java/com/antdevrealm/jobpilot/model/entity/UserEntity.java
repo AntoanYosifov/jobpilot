@@ -30,7 +30,7 @@ public class UserEntity {
     private String lastName;
 
     @NonNull
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @NonNull

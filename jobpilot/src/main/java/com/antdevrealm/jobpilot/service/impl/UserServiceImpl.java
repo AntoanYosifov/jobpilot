@@ -1,5 +1,6 @@
 package com.antdevrealm.jobpilot.service.impl;
 
+import com.antdevrealm.jobpilot.exception.FieldValidationException;
 import com.antdevrealm.jobpilot.exception.ResourceNotFoundException;
 import com.antdevrealm.jobpilot.model.dto.user.UserRegistrationDTO;
 import com.antdevrealm.jobpilot.model.dto.user.UserResponseDTO;
@@ -27,6 +28,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO register(UserRegistrationDTO registrationDTO) {
+      if(userRepo.existsByEmail(registrationDTO.email())) {
+          throw new FieldValidationException("email", "Email is already registered. It must be unique!");
+      }
+
       return mapToResponseDTO(userRepo.save(mapToEntity(registrationDTO)));
     }
 
