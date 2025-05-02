@@ -2,6 +2,7 @@ package com.antdevrealm.jobpilot.service.impl;
 
 import com.antdevrealm.jobpilot.exception.FieldValidationException;
 import com.antdevrealm.jobpilot.exception.ResourceNotFoundException;
+import com.antdevrealm.jobpilot.model.dto.user.UserLoginDTO;
 import com.antdevrealm.jobpilot.model.dto.user.UserRegistrationDTO;
 import com.antdevrealm.jobpilot.model.dto.user.UserResponseDTO;
 import com.antdevrealm.jobpilot.model.entity.UserEntity;
@@ -12,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,11 +28,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO register(UserRegistrationDTO registrationDTO) {
-      if(userRepo.existsByEmail(registrationDTO.email())) {
-          throw new FieldValidationException("email", "Email is already registered. It must be unique!");
-      }
+        if (userRepo.existsByEmail(registrationDTO.email())) {
+            throw new FieldValidationException("email", "Email is already registered. It must be unique!");
+        }
 
-      return mapToResponseDTO(userRepo.save(mapToEntity(registrationDTO)));
+        return mapToResponseDTO(userRepo.save(mapToEntity(registrationDTO)));
     }
 
     @Override
@@ -46,11 +46,23 @@ public class UserServiceImpl implements UserService {
         return userRepo.findAll().stream().map(UserServiceImpl::mapToResponseDTO).toList();
     }
 
+    @Override
+    public boolean validateUser(UserLoginDTO loginDTO) {
+        if (!userRepo.existsByEmail(loginDTO.email())) {
+            return false;
+        }
+
+        UserEntity userEntity = userRepo.findByEmail(loginDTO.email())
+                .orElseThrow(() -> new ResourceNotFoundException("User with email: " + loginDTO.email() + " not found!"));
+
+        return passwordEncoder.matches(loginDTO.password(), userEntity.getPassword());
+    }
+
     private UserEntity mapToEntity(UserRegistrationDTO registrationDTO) {
-       return new UserEntity(registrationDTO.firstName(),
+        return new UserEntity(registrationDTO.firstName(),
                 registrationDTO.lastName(),
                 registrationDTO.email(),
-                 passwordEncoder.encode(registrationDTO.password()));
+                passwordEncoder.encode(registrationDTO.password()));
     }
 
     private static UserResponseDTO mapToResponseDTO(UserEntity userEntity) {
