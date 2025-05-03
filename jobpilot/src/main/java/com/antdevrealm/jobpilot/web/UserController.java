@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -24,11 +26,12 @@ public class UserController {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
+
     // TODO: Add Pageable functionality and search for administration purposes and data integrity
     @GetMapping()
     public ResponseEntity<List<UserResponseDTO>> getAll() {
-      List<UserResponseDTO> responseDTOS = userService.getAll();
-      return ResponseEntity.ok(responseDTOS);
+        List<UserResponseDTO> responseDTOS = userService.getAll();
+        return ResponseEntity.ok(responseDTOS);
     }
 
     @GetMapping("/{id}")
@@ -47,14 +50,19 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginDTO loginDTO) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody UserLoginDTO loginDTO) {
         boolean isValid = userService.validateUser(loginDTO);
 
-        if(isValid) {
+        Map<String, String> response = new HashMap<>();
+
+        if (isValid) {
             String token = jwtUtil.generateToken(loginDTO.email());
-            return ResponseEntity.ok(token);
+            response.put("token", token);
+
+            return ResponseEntity.ok(response);
         }
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credentials");
+        response.put("error", "Invalid Credentials");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 }
