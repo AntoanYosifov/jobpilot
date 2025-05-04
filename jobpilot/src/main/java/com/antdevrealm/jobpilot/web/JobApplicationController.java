@@ -1,24 +1,24 @@
 package com.antdevrealm.jobpilot.web;
 
 import com.antdevrealm.jobpilot.enums.StatusEnum;
-
-import com.antdevrealm.jobpilot.exception.BadRequestException;
+import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
 import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationDTO;
 import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationResponseDTO;
-import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
 import com.antdevrealm.jobpilot.service.JobApplicationService;
-
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/applications")
+@Validated
 public class JobApplicationController {
     private final JobApplicationService jobService;
 
@@ -27,34 +27,17 @@ public class JobApplicationController {
         this.jobService = jobService;
     }
 
-
-    // TODO: Refine logic. Test!
     @GetMapping
     public ResponseEntity<PaginatedResponse<JobApplicationResponseDTO>> getApplications(
-            @RequestParam(required = false) String status,
+            @RequestParam(required = false) StatusEnum status,
             @RequestParam(required = false) String companyName,
             @RequestParam(required = false) String positionName,
-            @RequestParam(defaultValue = "desc") String sortDir,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) throws BadRequestException {
-
-        if (page < 0) throw new BadRequestException("Page must be 0 or higher");
-        if (size < 1 || size > 50) throw new BadRequestException("Size must be between 1 and 50");
-
-        StatusEnum statusEnum = null;
-        if (status != null) {
-            try {
-                statusEnum = StatusEnum.valueOf(status.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                List<String> validStatuses = Arrays.stream(StatusEnum.values())
-                        .map(Enum::name)
-                        .toList();
-                throw new BadRequestException("Invalid status: " + status, validStatuses);
-            }
-        }
+            @RequestParam(defaultValue = "desc") @Pattern(regexp = "asc|desc") String sortDir,
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "5") @Min(1) @Max(50) int size) {
 
         PaginatedResponse<JobApplicationResponseDTO> result = jobService.searchApplications(
-                statusEnum, companyName, positionName, sortDir, page, size);
+                status, companyName, positionName, sortDir, page, size);
 
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(result.totalElements()))

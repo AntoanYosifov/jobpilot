@@ -33,7 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
     }
 
-
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         return EXCLUDED_PATHS.stream()
