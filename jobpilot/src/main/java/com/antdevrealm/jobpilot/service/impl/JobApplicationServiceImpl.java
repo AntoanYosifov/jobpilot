@@ -2,18 +2,16 @@ package com.antdevrealm.jobpilot.service.impl;
 
 import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.exception.ResourceNotFoundException;
+import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
 import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationDTO;
 import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationResponseDTO;
-import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
 import com.antdevrealm.jobpilot.repository.jobapplication.JobApplicationRepository;
 import com.antdevrealm.jobpilot.service.JobApplicationService;
 import com.antdevrealm.jobpilot.util.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -33,13 +31,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     public PaginatedResponse<JobApplicationResponseDTO> searchApplications(StatusEnum statusEnum,
                                                                            String companyName,
                                                                            String positionName,
-                                                                           String sortDir,
-                                                                           int page,
-                                                                           int size) {
-        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, "appliedOn");
+                                                                           Pageable pageable) {
 
-        Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<JobApplicationEntity> applicationEntityPage = jobRepo.searchApplications(
                 statusEnum, companyName, positionName, pageable);

@@ -4,6 +4,7 @@ import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationDTO;
 import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationResponseDTO;
 import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
+import org.springframework.data.domain.Pageable;
 
 
 public interface JobApplicationService {
@@ -18,7 +19,5 @@ public interface JobApplicationService {
     PaginatedResponse<JobApplicationResponseDTO> searchApplications(StatusEnum statusEnum,
                                                                     String companyName,
                                                                     String positionName,
-                                                                    String sortDir,
-                                                                    int page,
-                                                                    int size);
+                                                                    Pageable pageable);
 }

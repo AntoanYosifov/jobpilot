@@ -1,14 +1,11 @@
 package com.antdevrealm.jobpilot.repository.jobapplication;
 
-import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface JobApplicationRepository extends JpaRepository<JobApplicationEntity, Long>, JobApplicationRepositoryCustom {
@@ -22,9 +19,5 @@ public interface JobApplicationRepository extends JpaRepository<JobApplicationEn
     @NonNull
     Page<JobApplicationEntity> findAll(@NonNull Pageable pageable);
 
-    Page<JobApplicationEntity> findAllByStatus(StatusEnum statusEnum, Pageable pageable);
-
-    List<JobApplicationEntity> searchAllByCompanyIgnoreCase(String companyName);
-    List<JobApplicationEntity> searchAllByPositionIgnoreCase(String positionName);
 
 }

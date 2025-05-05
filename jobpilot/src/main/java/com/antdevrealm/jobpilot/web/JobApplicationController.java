@@ -6,10 +6,10 @@ import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationDTO;
 import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationResponseDTO;
 import com.antdevrealm.jobpilot.service.JobApplicationService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,12 +32,14 @@ public class JobApplicationController {
             @RequestParam(required = false) StatusEnum status,
             @RequestParam(required = false) String companyName,
             @RequestParam(required = false) String positionName,
-            @RequestParam(defaultValue = "desc") @Pattern(regexp = "asc|desc") String sortDir,
-            @RequestParam(defaultValue = "0") @Min(0) int page,
-            @RequestParam(defaultValue = "5") @Min(1) @Max(50) int size) {
+            @PageableDefault(
+                    size = 5,
+                    sort = "appliedOn",
+                    direction = Sort.Direction.DESC
+            ) Pageable pageable) {
 
         PaginatedResponse<JobApplicationResponseDTO> result = jobService.searchApplications(
-                status, companyName, positionName, sortDir, page, size);
+                status, companyName, positionName, pageable);
 
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(result.totalElements()))
