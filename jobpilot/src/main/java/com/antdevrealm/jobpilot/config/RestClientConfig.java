@@ -2,6 +2,8 @@ package com.antdevrealm.jobpilot.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
 
 import java.util.Map;
@@ -16,6 +18,7 @@ public class RestClientConfig {
                                 "app_id", props.getAppId(),
                         "app_key", props.getAppKey()
                         ))
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
 }
