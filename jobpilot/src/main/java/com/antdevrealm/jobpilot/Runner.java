@@ -2,9 +2,12 @@ package com.antdevrealm.jobpilot;
 
 import com.antdevrealm.jobpilot.config.AdzunaPropertiesConfig;
 import com.antdevrealm.jobpilot.enums.StatusEnum;
+import com.antdevrealm.jobpilot.integration.adzuna.AdzunaJobDTO;
 import com.antdevrealm.jobpilot.integration.adzuna.AdzunaResponseDTO;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
+import com.antdevrealm.jobpilot.model.entity.JobPostingEntity;
 import com.antdevrealm.jobpilot.repository.jobapplication.JobApplicationRepository;
+import com.antdevrealm.jobpilot.service.JobPostingService;
 import com.antdevrealm.jobpilot.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -21,12 +24,14 @@ public class Runner implements CommandLineRunner {
     private final AdzunaPropertiesConfig props;
     private final JobApplicationRepository repo;
     private final UserService userService;
+    private final JobPostingService jobPostingService;
 
-    public Runner(RestClient restClient, AdzunaPropertiesConfig props, JobApplicationRepository repo, UserService userService) {
+    public Runner(RestClient restClient, AdzunaPropertiesConfig props, JobApplicationRepository repo, UserService userService, JobPostingService jobPostingService) {
         this.restClient = restClient;
         this.props = props;
         this.repo = repo;
         this.userService = userService;
+        this.jobPostingService = jobPostingService;
     }
 
     @Override
@@ -59,7 +64,6 @@ public class Runner implements CommandLineRunner {
             System.out.println("Seeded 20 job applications.");
         }
 
-
         try {
             AdzunaResponseDTO resp = restClient.get()
                     .uri(uriBuilder ->
@@ -74,6 +78,12 @@ public class Runner implements CommandLineRunner {
                     .toEntity(AdzunaResponseDTO.class)
                     .getBody();
             System.out.println("Adzuna smoke test: " + resp);
+
+            AdzunaJobDTO testDto = resp.results().getFirst();
+
+            JobPostingEntity savedPostingEntity = jobPostingService.save(testDto);
+            System.out.println(savedPostingEntity);
+
         } catch (Exception e) {
             System.err.println("Adzuna smoke test failed: ");
             e.printStackTrace();

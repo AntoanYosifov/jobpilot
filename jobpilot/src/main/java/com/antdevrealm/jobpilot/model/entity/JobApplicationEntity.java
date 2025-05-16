@@ -27,11 +27,13 @@ public class JobApplicationEntity {
     @NonNull
     @ToString.Include
     @Column(nullable = false)
+    @EqualsAndHashCode.Include
     private String company;
 
     @NonNull
     @ToString.Include
     @Column(nullable = false)
+    @EqualsAndHashCode.Include
     private String position;
 
     @NonNull
@@ -39,10 +41,10 @@ public class JobApplicationEntity {
     @Column(nullable = false)
     private StatusEnum status;
 
-
     @NonNull
     @ToString.Include
     @Column(name = "applied_on", nullable = false)
+    @EqualsAndHashCode.Include
     private LocalDate appliedOn;
 
     private String feedback;
