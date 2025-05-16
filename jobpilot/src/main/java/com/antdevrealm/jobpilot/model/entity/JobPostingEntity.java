@@ -55,6 +55,16 @@ public class JobPostingEntity {
     @Column(nullable = false, name = "external_created_at")
     private ZonedDateTime externalCreatedAt;
 
+    // ----------------------------------------------------------------
+    // TODO(front-end): latitude & longitude will be used by the UI
+    //     to plot job locations on a map. These stay nullable here
+    //     until the front end implements mapping/geo-features.
+    // ----------------------------------------------------------------
+
+    private Double latitude;
+
+    private Double longitude;
+
     @CreationTimestamp
     @Column(nullable = false, name = "created_at", updatable = false)
     private Instant createdAt;

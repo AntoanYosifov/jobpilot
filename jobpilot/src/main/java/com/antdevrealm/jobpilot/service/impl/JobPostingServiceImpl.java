@@ -21,7 +21,7 @@ public class JobPostingServiceImpl implements JobPostingService {
     }
 
     private static JobPostingEntity mapToEntity(AdzunaJobDTO dto) {
-        return new JobPostingEntity(
+        JobPostingEntity jobPostingEntity = new JobPostingEntity(
                 Long.valueOf(dto.id()),
                 dto.title(),
                 dto.company().display_name(),
@@ -30,5 +30,10 @@ public class JobPostingServiceImpl implements JobPostingService {
                 dto.redirect_url(),
                 dto.created()
         );
+
+        jobPostingEntity.setLatitude(dto.latitude());
+        jobPostingEntity.setLongitude(dto.longitude());
+
+        return jobPostingEntity;
     }
 }

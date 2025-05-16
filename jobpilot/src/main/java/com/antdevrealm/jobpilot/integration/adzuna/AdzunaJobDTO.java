@@ -9,7 +9,9 @@ public record AdzunaJobDTO(
         Location location,
         String description,
         String redirect_url,
-        ZonedDateTime created
+        ZonedDateTime created,
+        Double latitude,    // use wrapper types
+        Double longitude
 ) {
     public record Company(String display_name) {}
     public record Location(String display_name) {}
