@@ -79,10 +79,10 @@ public class Runner implements CommandLineRunner {
                     .getBody();
             System.out.println("Adzuna smoke test: " + resp);
 
-            AdzunaJobDTO testDto = resp.results().getFirst();
-
-            JobPostingEntity savedPostingEntity = jobPostingService.save(testDto);
-            System.out.println(savedPostingEntity);
+//            AdzunaJobDTO testDto = resp.results().getFirst();
+//
+//            JobPostingEntity savedPostingEntity = jobPostingService.save(testDto);
+//            System.out.println(savedPostingEntity);
 
         } catch (Exception e) {
             System.err.println("Adzuna smoke test failed: ");

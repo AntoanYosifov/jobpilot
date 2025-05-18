@@ -27,13 +27,11 @@ public class JobApplicationEntity {
     @NonNull
     @ToString.Include
     @Column(nullable = false)
-    @EqualsAndHashCode.Include
     private String company;
 
     @NonNull
     @ToString.Include
     @Column(nullable = false)
-    @EqualsAndHashCode.Include
     private String position;
 
     @NonNull
