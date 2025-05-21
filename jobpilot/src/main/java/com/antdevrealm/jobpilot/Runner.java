@@ -1,38 +1,32 @@
 package com.antdevrealm.jobpilot;
 
-import com.antdevrealm.jobpilot.config.AdzunaPropertiesConfig;
 import com.antdevrealm.jobpilot.enums.StatusEnum;
-import com.antdevrealm.jobpilot.integration.adzuna.AdzunaJobDTO;
-import com.antdevrealm.jobpilot.integration.adzuna.AdzunaResponseDTO;
+import com.antdevrealm.jobpilot.exception.ExternalServiceException;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
-import com.antdevrealm.jobpilot.model.entity.JobPostingEntity;
 import com.antdevrealm.jobpilot.repository.jobapplication.JobApplicationRepository;
 import com.antdevrealm.jobpilot.service.JobPostingService;
-import com.antdevrealm.jobpilot.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class Runner implements CommandLineRunner {
 
-    private final RestClient restClient;
-    private final AdzunaPropertiesConfig props;
+    private static final Logger log = LoggerFactory.getLogger(Runner.class);
     private final JobApplicationRepository repo;
-    private final UserService userService;
+
     private final JobPostingService jobPostingService;
 
-    public Runner(RestClient restClient, AdzunaPropertiesConfig props, JobApplicationRepository repo, UserService userService, JobPostingService jobPostingService) {
-        this.restClient = restClient;
-        this.props = props;
+    public Runner(JobApplicationRepository repo, JobPostingService jobPostingService) {
         this.repo = repo;
-        this.userService = userService;
         this.jobPostingService = jobPostingService;
     }
+
 
     @Override
     public void run(String... args) {
@@ -63,31 +57,11 @@ public class Runner implements CommandLineRunner {
             repo.saveAll(jobs);
             System.out.println("Seeded 20 job applications.");
         }
-
         try {
-            AdzunaResponseDTO resp = restClient.get()
-                    .uri(uriBuilder ->
-                            uriBuilder.path("/search/{page}")
-                                    .queryParam("app_id", "{app_id}")
-                                    .queryParam("app_key", "{app_key}")
-                                    .queryParam("what", "developer")
-                                    .queryParam("results_per_page", props.getDefaultResultsPerPage())
-                                    .build(Map.of("page", 1))
-                    )
-                    .retrieve()
-                    .toEntity(AdzunaResponseDTO.class)
-                    .getBody();
-            System.out.println("Adzuna smoke test: " + resp);
 
-//            AdzunaJobDTO testDto = resp.results().getFirst();
-//
-//            JobPostingEntity savedPostingEntity = jobPostingService.save(testDto);
-//            System.out.println(savedPostingEntity);
-
-        } catch (Exception e) {
-            System.err.println("Adzuna smoke test failed: ");
-            e.printStackTrace();
+            jobPostingService.refreshJobPostings(-1);
+        } catch (ExternalServiceException ex) {
+            log.error(ex.getMessage(), ex.getCause());
         }
-
     }
 }

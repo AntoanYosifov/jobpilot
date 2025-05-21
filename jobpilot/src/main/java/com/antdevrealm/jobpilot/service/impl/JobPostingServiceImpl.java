@@ -1,30 +1,43 @@
 package com.antdevrealm.jobpilot.service.impl;
 
+import com.antdevrealm.jobpilot.config.AdzunaPropertiesConfig;
 import com.antdevrealm.jobpilot.exception.ResourceNotFoundException;
-import com.antdevrealm.jobpilot.integration.adzuna.AdzunaJobDTO;
+import com.antdevrealm.jobpilot.integration.adzuna.AdzunaJobClient;
+import com.antdevrealm.jobpilot.integration.adzuna.dto.AdzunaJobDTO;
 import com.antdevrealm.jobpilot.model.dto.jobposting.JobPostingResponseDTO;
 import com.antdevrealm.jobpilot.model.entity.JobPostingEntity;
 import com.antdevrealm.jobpilot.repository.jobposting.JobPostingRepository;
 import com.antdevrealm.jobpilot.service.JobPostingService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class JobPostingServiceImpl implements JobPostingService {
 
-    private final JobPostingRepository jobPostingRepo;
+    private final JobPostingRepository repo;
+    private final AdzunaJobClient client;
 
-    public JobPostingServiceImpl(JobPostingRepository jobPostingRepo) {
-        this.jobPostingRepo = jobPostingRepo;
-    }
+    public JobPostingServiceImpl(JobPostingRepository repo, AdzunaJobClient client) {
+        this.repo = repo;
+        this.client = client;
 
-    @Override
-    public JobPostingEntity save(AdzunaJobDTO dto) {
-        return jobPostingRepo.save(mapToEntity(dto));
     }
 
     @Override
     public JobPostingResponseDTO getById(Long id) {
-        return mapToResponseDTO(jobPostingRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Job Posting with id: " + id + " not found!")));
+        return mapToResponseDTO(repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Job Posting with id: " + id + " not found!")));
+    }
+
+    @Override
+    public int refreshJobPostings(int page) {
+        List<AdzunaJobDTO> dtos = client.fetchJobs(page);
+        List<JobPostingEntity> entities = dtos.stream().map(JobPostingServiceImpl::mapToEntity)
+                .toList();
+
+        List<JobPostingEntity> saved = repo.saveAll(entities);
+
+        return saved.size();
     }
 
     private static JobPostingResponseDTO mapToResponseDTO(JobPostingEntity entity) {
@@ -56,4 +69,5 @@ public class JobPostingServiceImpl implements JobPostingService {
 
         return jobPostingEntity;
     }
+
 }

@@ -1,5 +1,6 @@
 package com.antdevrealm.jobpilot.web;
 
+import com.antdevrealm.jobpilot.exception.ExternalServiceException;
 import com.antdevrealm.jobpilot.exception.FieldValidationException;
 import com.antdevrealm.jobpilot.exception.ResourceNotFoundException;
 import com.antdevrealm.jobpilot.exception.dto.ErrorResponseDTO;
@@ -23,6 +24,19 @@ import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(ExternalServiceException.class)
+    public ResponseEntity<ErrorResponseDTO> onExternalService(
+            ExternalServiceException ex,
+            HttpServletRequest req
+    ) {
+        return buildErrorResponse(
+                HttpStatus.SERVICE_UNAVAILABLE,
+                ex.getMessage(),
+                req.getRequestURI(),
+                null
+        );
+    }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponseDTO> onConstraintViolation(

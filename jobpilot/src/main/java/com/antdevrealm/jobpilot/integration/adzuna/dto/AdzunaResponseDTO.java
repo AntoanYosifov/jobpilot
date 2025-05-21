@@ -1,4 +1,4 @@
-package com.antdevrealm.jobpilot.integration.adzuna;
+package com.antdevrealm.jobpilot.integration.adzuna.dto;
 
 import java.util.List;
 
