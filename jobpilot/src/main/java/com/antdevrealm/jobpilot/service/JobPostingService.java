@@ -4,5 +4,5 @@ import com.antdevrealm.jobpilot.model.dto.jobposting.JobPostingResponseDTO;
 
 public interface JobPostingService {
     JobPostingResponseDTO getById(Long id);
-    int refreshJobPostings(int page);
+    int refreshJobPostings();
 }

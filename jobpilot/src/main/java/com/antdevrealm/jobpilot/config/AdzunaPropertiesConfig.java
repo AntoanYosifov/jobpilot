@@ -15,4 +15,7 @@ public class AdzunaPropertiesConfig {
     private String appKey;
     private String country;
     private int defaultResultsPerPage;
+    private int maxDaysOld;
+    private String sortDir;
+    private String sortBy;
 }

@@ -1,5 +1,6 @@
 package com.antdevrealm.jobpilot;
 
+import com.antdevrealm.jobpilot.config.AdzunaPropertiesConfig;
 import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.exception.ExternalServiceException;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
@@ -17,12 +18,15 @@ import java.util.List;
 @Component
 public class Runner implements CommandLineRunner {
 
+    private final AdzunaPropertiesConfig props;
+
     private static final Logger log = LoggerFactory.getLogger(Runner.class);
     private final JobApplicationRepository repo;
 
     private final JobPostingService jobPostingService;
 
-    public Runner(JobApplicationRepository repo, JobPostingService jobPostingService) {
+    public Runner(AdzunaPropertiesConfig props, JobApplicationRepository repo, JobPostingService jobPostingService) {
+        this.props = props;
         this.repo = repo;
         this.jobPostingService = jobPostingService;
     }
@@ -58,8 +62,9 @@ public class Runner implements CommandLineRunner {
             System.out.println("Seeded 20 job applications.");
         }
         try {
+            jobPostingService.refreshJobPostings();
 
-            jobPostingService.refreshJobPostings(-1);
+            System.out.println(props.getSortDir());
         } catch (ExternalServiceException ex) {
             log.error(ex.getMessage(), ex.getCause());
         }

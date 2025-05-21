@@ -14,10 +14,10 @@ public class RestClientConfig {
     public RestClient adzunaRestClient(AdzunaPropertiesConfig props) {
         return RestClient.builder()
                 .baseUrl(props.getBaseUrl() + "/" + props.getCountry())
-                .defaultUriVariables(Map.of(
-                                "app_id", props.getAppId(),
-                        "app_key", props.getAppKey()
-                        ))
+//                .defaultUriVariables(
+//                        Map.of("app_id", props.getAppId(),
+//                                "app_key", props.getAppKey())
+//                )
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }

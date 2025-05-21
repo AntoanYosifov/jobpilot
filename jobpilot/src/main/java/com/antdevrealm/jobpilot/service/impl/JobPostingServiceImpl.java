@@ -4,6 +4,7 @@ import com.antdevrealm.jobpilot.config.AdzunaPropertiesConfig;
 import com.antdevrealm.jobpilot.exception.ResourceNotFoundException;
 import com.antdevrealm.jobpilot.integration.adzuna.AdzunaJobClient;
 import com.antdevrealm.jobpilot.integration.adzuna.dto.AdzunaJobDTO;
+import com.antdevrealm.jobpilot.integration.adzuna.dto.AdzunaResponseDTO;
 import com.antdevrealm.jobpilot.model.dto.jobposting.JobPostingResponseDTO;
 import com.antdevrealm.jobpilot.model.entity.JobPostingEntity;
 import com.antdevrealm.jobpilot.repository.jobposting.JobPostingRepository;
@@ -11,17 +12,20 @@ import com.antdevrealm.jobpilot.service.JobPostingService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class JobPostingServiceImpl implements JobPostingService {
 
     private final JobPostingRepository repo;
     private final AdzunaJobClient client;
+    private final AdzunaPropertiesConfig props;
 
-    public JobPostingServiceImpl(JobPostingRepository repo, AdzunaJobClient client) {
+    public JobPostingServiceImpl(JobPostingRepository repo, AdzunaJobClient client, AdzunaPropertiesConfig props) {
         this.repo = repo;
         this.client = client;
-
+        this.props = props;
     }
 
     @Override
@@ -30,10 +34,20 @@ public class JobPostingServiceImpl implements JobPostingService {
     }
 
     @Override
-    public int refreshJobPostings(int page) {
-        List<AdzunaJobDTO> dtos = client.fetchJobs(page);
-        List<JobPostingEntity> entities = dtos.stream().map(JobPostingServiceImpl::mapToEntity)
-                .toList();
+    public int refreshJobPostings() {
+        AdzunaResponseDTO first = client.fetchJobs(1);
+        int totalPostings = Optional.ofNullable(first)
+                .map(AdzunaResponseDTO::count).orElse(0);
+
+        int pageSize = props.getDefaultResultsPerPage();
+        int totalPages = (int)Math.ceil((double) totalPostings / pageSize);
+
+        int randomPage = ThreadLocalRandom.current()
+                .nextInt(1, totalPages + 1);
+
+        List<AdzunaJobDTO> dtos = client.fetchJobs(randomPage).results();
+
+        List<JobPostingEntity> entities = dtos.stream().map(JobPostingServiceImpl::mapToEntity).toList();
 
         List<JobPostingEntity> saved = repo.saveAll(entities);
 
