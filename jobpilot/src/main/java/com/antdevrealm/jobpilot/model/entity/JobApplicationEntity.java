@@ -46,4 +46,11 @@ public class JobApplicationEntity {
     private LocalDate appliedOn;
 
     private String feedback;
+
+    @ManyToOne
+    private UserEntity author;
+
+    @ManyToOne
+    @JoinColumn(name = "target_job")
+    private JobPostingEntity targetJob;
 }

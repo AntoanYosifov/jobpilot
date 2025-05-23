@@ -31,7 +31,6 @@ public class AdzunaJobClient {
                             .queryParam("what",              "developer")
                             .queryParam("results_per_page",  props.getDefaultResultsPerPage())
                             .queryParam("max_days_old",      props.getMaxDaysOld())
-                            .queryParam("sort_dir",      props.getSortDir())
                             .queryParam("sort_by",           props.getSortBy())
                             .build()
                     )

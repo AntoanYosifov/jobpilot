@@ -1,6 +1,5 @@
 package com.antdevrealm.jobpilot;
 
-import com.antdevrealm.jobpilot.config.AdzunaPropertiesConfig;
 import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.exception.ExternalServiceException;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
@@ -9,7 +8,6 @@ import com.antdevrealm.jobpilot.service.JobPostingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -18,23 +16,24 @@ import java.util.List;
 @Component
 public class Runner implements CommandLineRunner {
 
-    private final AdzunaPropertiesConfig props;
-
     private static final Logger log = LoggerFactory.getLogger(Runner.class);
-    private final JobApplicationRepository repo;
+    private final JobApplicationRepository jobApplicationRepo;
+
 
     private final JobPostingService jobPostingService;
 
-    public Runner(AdzunaPropertiesConfig props, JobApplicationRepository repo, JobPostingService jobPostingService) {
-        this.props = props;
-        this.repo = repo;
+    public Runner(JobApplicationRepository jobApplicationRepo,  JobPostingService jobPostingService) {
+
+        this.jobApplicationRepo = jobApplicationRepo;
         this.jobPostingService = jobPostingService;
     }
 
 
     @Override
     public void run(String... args) {
-        if (repo.count() == 0) {
+
+
+        if (jobApplicationRepo.count() == 0) {
             List<JobApplicationEntity> jobs = List.of(
                     new JobApplicationEntity("Spotify", "Java Developer", StatusEnum.APPLIED, LocalDate.now().minusDays(10)),
                     new JobApplicationEntity("Google", "Backend Engineer", StatusEnum.INTERVIEW, LocalDate.now().minusDays(7)),
@@ -58,13 +57,11 @@ public class Runner implements CommandLineRunner {
                     new JobApplicationEntity("Adobe", "Junior API Engineer", StatusEnum.APPLIED, LocalDate.now().minusDays(1))
             );
 
-            repo.saveAll(jobs);
+            jobApplicationRepo.saveAll(jobs);
             System.out.println("Seeded 20 job applications.");
         }
         try {
             jobPostingService.refreshJobPostings();
-
-            System.out.println(props.getSortDir());
         } catch (ExternalServiceException ex) {
             log.error(ex.getMessage(), ex.getCause());
         }

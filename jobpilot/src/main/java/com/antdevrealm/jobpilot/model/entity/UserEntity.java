@@ -3,6 +3,8 @@ package com.antdevrealm.jobpilot.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,5 +38,9 @@ public class UserEntity {
     @NonNull
     @Column(nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "author")
+    @Column(name = "job_applications")
+    private List<JobApplicationEntity> jobApplications;
 
 }
