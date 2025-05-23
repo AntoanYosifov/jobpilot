@@ -19,7 +19,15 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ToString.Include
     @EqualsAndHashCode.Include
-    private Long id;
+    private long id;
+
+    @NonNull
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @NonNull
+    @Column(nullable = false)
+    private String password;
 
     @NonNull
     @ToString.Include
@@ -31,16 +39,7 @@ public class UserEntity {
     @Column(name = "last_name")
     private String lastName;
 
-    @NonNull
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @NonNull
-    @Column(nullable = false)
-    private String password;
-
     @OneToMany(mappedBy = "author")
-    @Column(name = "job_applications")
     private List<JobApplicationEntity> jobApplications;
 
 }

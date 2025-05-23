@@ -2,7 +2,6 @@ package com.antdevrealm.jobpilot.service.impl;
 
 import com.antdevrealm.jobpilot.exception.FieldValidationException;
 import com.antdevrealm.jobpilot.exception.ResourceNotFoundException;
-import com.antdevrealm.jobpilot.model.dto.user.UserLoginDTO;
 import com.antdevrealm.jobpilot.model.dto.user.UserRegistrationDTO;
 import com.antdevrealm.jobpilot.model.dto.user.UserResponseDTO;
 import com.antdevrealm.jobpilot.model.entity.UserEntity;
@@ -46,23 +45,13 @@ public class UserServiceImpl implements UserService {
         return userRepo.findAll().stream().map(UserServiceImpl::mapToResponseDTO).toList();
     }
 
-    @Override
-    public boolean validateUser(UserLoginDTO loginDTO) {
-        if (!userRepo.existsByEmail(loginDTO.email())) {
-            return false;
-        }
 
-        UserEntity userEntity = userRepo.findByEmail(loginDTO.email())
-                .orElseThrow(() -> new ResourceNotFoundException("User with email: " + loginDTO.email() + " not found!"));
-
-        return passwordEncoder.matches(loginDTO.password(), userEntity.getPassword());
-    }
 
     private UserEntity mapToEntity(UserRegistrationDTO registrationDTO) {
-        return new UserEntity(registrationDTO.firstName(),
-                registrationDTO.lastName(),
-                registrationDTO.email(),
-                passwordEncoder.encode(registrationDTO.password()));
+        return new UserEntity(registrationDTO.email(),
+                passwordEncoder.encode(registrationDTO.password()),
+                registrationDTO.firstName(),
+                registrationDTO.lastName());
     }
 
     private static UserResponseDTO mapToResponseDTO(UserEntity userEntity) {

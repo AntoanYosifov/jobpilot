@@ -1,5 +1,6 @@
 package com.antdevrealm.jobpilot.security.filter;
 
+import com.antdevrealm.jobpilot.security.service.JobPilotUserDetailsService;
 import com.antdevrealm.jobpilot.util.JwtUtil;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -10,6 +11,7 @@ import lombok.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -28,9 +30,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     );
 
     private final JwtUtil jwtUtil;
+    private final JobPilotUserDetailsService jobPilotUserDetailsService;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, JobPilotUserDetailsService jobPilotUserDetailsService) {
         this.jwtUtil = jwtUtil;
+        this.jobPilotUserDetailsService = jobPilotUserDetailsService;
     }
 
     @Override
@@ -56,18 +60,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            String user = jwtUtil.extractUsername(token);
+            String username = jwtUtil.extractUsername(token);
 
-            if(!jwtUtil.validateToken(token, user)) {
+            if(!jwtUtil.validateToken(token, username)) {
                 throw new BadCredentialsException("Token validation failed");
             }
 
-            var auth = new UsernamePasswordAuthenticationToken(
-                    user, null, List.of()
+            UserDetails userDetails = jobPilotUserDetailsService.loadUserByUsername(username);
+
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities()
             );
-            auth.setDetails(new WebAuthenticationDetailsSource()
-                    .buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(auth);
+
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
         } catch (JwtException | IllegalArgumentException ex) {
             throw new BadCredentialsException("Invalid or expired token", ex);
         }

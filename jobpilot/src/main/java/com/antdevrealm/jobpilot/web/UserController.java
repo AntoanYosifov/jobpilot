@@ -6,12 +6,13 @@ import com.antdevrealm.jobpilot.model.dto.user.UserResponseDTO;
 import com.antdevrealm.jobpilot.service.UserService;
 import com.antdevrealm.jobpilot.util.JwtUtil;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,10 +22,12 @@ public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
-    public UserController(UserService userService, JwtUtil jwtUtil) {
+    public UserController(UserService userService, JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
     }
 
     // TODO: Add Pageable functionality and search for administration purposes and data integrity
@@ -51,18 +54,15 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody UserLoginDTO loginDTO) {
-        boolean isValid = userService.validateUser(loginDTO);
 
-        Map<String, String> response = new HashMap<>();
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDTO.email(),
+                        loginDTO.password()
+                )
+        );
 
-        if (isValid) {
-            String token = jwtUtil.generateToken(loginDTO.email());
-            response.put("token", token);
-
-            return ResponseEntity.ok(response);
-        }
-
-        response.put("error", "Invalid Credentials");
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        String token = jwtUtil.generateToken(authentication.getName());
+        return ResponseEntity.ok(Map.of("token", token));
     }
 }
