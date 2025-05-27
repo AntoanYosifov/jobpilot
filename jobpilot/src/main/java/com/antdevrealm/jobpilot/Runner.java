@@ -60,10 +60,10 @@ public class Runner implements CommandLineRunner {
             jobApplicationRepo.saveAll(jobs);
             System.out.println("Seeded 20 job applications.");
         }
-        try {
-            jobPostingService.refreshJobPostings();
-        } catch (ExternalServiceException ex) {
-            log.error(ex.getMessage(), ex.getCause());
-        }
+//        try {
+//            jobPostingService.refreshJobPostings();
+//        } catch (ExternalServiceException ex) {
+//            log.error(ex.getMessage(), ex.getCause());
+//        }
     }
 }

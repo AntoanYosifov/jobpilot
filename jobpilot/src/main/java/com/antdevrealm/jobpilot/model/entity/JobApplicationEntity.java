@@ -23,7 +23,6 @@ public class JobApplicationEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
-
     @NonNull
     @ToString.Include
     @Column(nullable = false)
@@ -33,6 +32,8 @@ public class JobApplicationEntity {
     @ToString.Include
     @Column(nullable = false)
     private String position;
+
+    // TODO: Add a field for the AI generated specific cover letter based on the user's profile and job posting details
 
     @NonNull
     @Enumerated(EnumType.STRING)

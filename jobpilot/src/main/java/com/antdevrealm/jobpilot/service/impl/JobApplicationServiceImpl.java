@@ -7,11 +7,13 @@ import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationDTO;
 import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationResponseDTO;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
 import com.antdevrealm.jobpilot.repository.jobapplication.JobApplicationRepository;
+import com.antdevrealm.jobpilot.repository.jobapplication.specification.JobApplicationSpecs;
 import com.antdevrealm.jobpilot.service.JobApplicationService;
 import com.antdevrealm.jobpilot.util.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,11 +22,11 @@ import java.time.LocalDate;
 @Service
 public class JobApplicationServiceImpl implements JobApplicationService {
 
-    private final JobApplicationRepository jobRepo;
+    private final JobApplicationRepository jobAppRepo;
 
     @Autowired
-    public JobApplicationServiceImpl(JobApplicationRepository jobRepo) {
-        this.jobRepo = jobRepo;
+    public JobApplicationServiceImpl(JobApplicationRepository jobAppRepo) {
+        this.jobAppRepo = jobAppRepo;
     }
 
     @Override
@@ -33,32 +35,38 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                                                                            String positionName,
                                                                            Pageable pageable) {
 
+        Specification<JobApplicationEntity> spec = Specification.where(JobApplicationSpecs.hasStatus(statusEnum))
+                .and(JobApplicationSpecs.companyLike(companyName))
+                .and(JobApplicationSpecs.positionLike(positionName));
 
-        Page<JobApplicationEntity> applicationEntityPage = jobRepo.searchApplications(
-                statusEnum, companyName, positionName, pageable);
+        Page<JobApplicationEntity> entityPage = jobAppRepo.findAll(spec, pageable);
 
-        Page<JobApplicationResponseDTO> dtoPage = applicationEntityPage.map(this::mapToResponseDTO);
-
-        return PaginationUtil.wrap(dtoPage);
+//
+//        Page<JobApplicationEntity> applicationEntityPage = jobRepo.searchApplications(
+//                statusEnum, companyName, positionName, pageable);
+//
+        Page<JobApplicationResponseDTO> dtoPge = entityPage.map(this::mapToResponseDTO);
+//
+        return PaginationUtil.wrap(dtoPge);
     }
 
 
     @Override
     public JobApplicationResponseDTO getById(Long id) {
-        return mapToResponseDTO(jobRepo.findById(id)
+        return mapToResponseDTO(jobAppRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("JobApplication with ID: " + id + " not found")));
     }
 
     @Override
     public JobApplicationResponseDTO apply(JobApplicationDTO dto) {
-        JobApplicationEntity saved = jobRepo.save(mapToEntity(dto));
+        JobApplicationEntity saved = jobAppRepo.save(mapToEntity(dto));
         return mapToResponseDTO(saved);
     }
 
     @Override
     public JobApplicationResponseDTO updateById(Long id, JobApplicationDTO dto) {
 
-        JobApplicationEntity forUpdate = jobRepo.findById(id)
+        JobApplicationEntity forUpdate = jobAppRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("JobApplication with ID: " + id + " not found"));
 
         if (dto.company() != null) {
@@ -71,18 +79,18 @@ public class JobApplicationServiceImpl implements JobApplicationService {
             forUpdate.setStatus(StatusEnum.valueOf(dto.status().toUpperCase()));
         }
 
-        JobApplicationEntity updated = jobRepo.save(forUpdate);
+        JobApplicationEntity updated = jobAppRepo.save(forUpdate);
         return mapToResponseDTO(updated);
     }
 
 
     @Override
     public void deleteById(Long id) {
-        if (!jobRepo.existsById(id)) {
+        if (!jobAppRepo.existsById(id)) {
             throw new ResourceNotFoundException("JobApplication with ID: " + id + " not found");
         }
 
-        jobRepo.deleteById(id);
+        jobAppRepo.deleteById(id);
     }
 
     private JobApplicationResponseDTO mapToResponseDTO(JobApplicationEntity entity) {
