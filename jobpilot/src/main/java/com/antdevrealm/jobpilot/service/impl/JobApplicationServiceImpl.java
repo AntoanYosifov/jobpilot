@@ -41,12 +41,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
         Page<JobApplicationEntity> entityPage = jobAppRepo.findAll(spec, pageable);
 
-//
-//        Page<JobApplicationEntity> applicationEntityPage = jobRepo.searchApplications(
-//                statusEnum, companyName, positionName, pageable);
-//
         Page<JobApplicationResponseDTO> dtoPge = entityPage.map(this::mapToResponseDTO);
-//
+
         return PaginationUtil.wrap(dtoPge);
     }
 

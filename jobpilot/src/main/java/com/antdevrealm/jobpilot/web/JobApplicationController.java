@@ -27,6 +27,7 @@ public class JobApplicationController {
         this.jobService = jobService;
     }
 
+    // TODO: implement authentication principal and getting the current user specific applications
     @GetMapping
     public ResponseEntity<PaginatedResponse<JobApplicationResponseDTO>> getApplications(
             @RequestParam(required = false) StatusEnum status,
@@ -35,8 +36,7 @@ public class JobApplicationController {
             @PageableDefault(
                     size = 5,
                     sort = "appliedOn",
-                    direction = Sort.Direction.DESC
-            ) Pageable pageable) {
+                    direction = Sort.Direction.DESC) Pageable pageable) {
 
         PaginatedResponse<JobApplicationResponseDTO> result = jobService.searchApplications(
                 status, companyName, positionName, pageable);
