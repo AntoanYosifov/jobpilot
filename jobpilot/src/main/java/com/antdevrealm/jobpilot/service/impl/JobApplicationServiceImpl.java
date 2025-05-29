@@ -8,6 +8,7 @@ import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationResponseD
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
 import com.antdevrealm.jobpilot.repository.jobapplication.JobApplicationRepository;
 import com.antdevrealm.jobpilot.repository.jobapplication.specification.JobApplicationSpecs;
+import com.antdevrealm.jobpilot.repository.user.UserRepository;
 import com.antdevrealm.jobpilot.service.JobApplicationService;
 import com.antdevrealm.jobpilot.util.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +24,25 @@ import java.time.LocalDate;
 public class JobApplicationServiceImpl implements JobApplicationService {
 
     private final JobApplicationRepository jobAppRepo;
+    private final UserRepository userRepo;
 
     @Autowired
-    public JobApplicationServiceImpl(JobApplicationRepository jobAppRepo) {
+    public JobApplicationServiceImpl(JobApplicationRepository jobAppRepo, UserRepository userRepo) {
         this.jobAppRepo = jobAppRepo;
+        this.userRepo = userRepo;
     }
 
     @Override
-    public PaginatedResponse<JobApplicationResponseDTO> searchApplications(StatusEnum statusEnum,
+    public PaginatedResponse<JobApplicationResponseDTO> searchApplications(Long authorId,
+                                                                           StatusEnum statusEnum,
                                                                            String companyName,
                                                                            String positionName,
                                                                            Pageable pageable) {
 
-        Specification<JobApplicationEntity> spec = Specification.where(JobApplicationSpecs.hasStatus(statusEnum))
+         userRepo.findByEmail("test@mail.com").orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Specification<JobApplicationEntity> spec = Specification.where(JobApplicationSpecs.hasAuthorId(authorId))
+                .and(JobApplicationSpecs.hasStatus(statusEnum))
                 .and(JobApplicationSpecs.companyLike(companyName))
                 .and(JobApplicationSpecs.positionLike(positionName));
 

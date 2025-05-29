@@ -5,8 +5,15 @@ import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
 import org.springframework.data.jpa.domain.Specification;
 
 public class JobApplicationSpecs {
+
+    public static Specification<JobApplicationEntity> hasAuthorId(Long authorId) {
+        return (root, query, cb) -> authorId == null ? cb.conjunction()
+                : cb.equal(root.get("author").get("id"), authorId);
+    }
+
     public static Specification<JobApplicationEntity> hasStatus(StatusEnum status) {
-        return (root, query, cb) -> status == null ? cb.conjunction() : cb.equal(root.get("status"), status);
+        return (root, query, cb) -> status == null ? cb.conjunction()
+                : cb.equal(root.get("status"), status);
     }
 
     public static Specification<JobApplicationEntity> companyLike(String company) {

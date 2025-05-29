@@ -16,7 +16,8 @@ public interface JobApplicationService {
 
     JobApplicationResponseDTO updateById(Long id, JobApplicationDTO dto);
 
-    PaginatedResponse<JobApplicationResponseDTO> searchApplications(StatusEnum statusEnum,
+    PaginatedResponse<JobApplicationResponseDTO> searchApplications(Long authorId,
+                                                                    StatusEnum statusEnum,
                                                                     String companyName,
                                                                     String positionName,
                                                                     Pageable pageable);

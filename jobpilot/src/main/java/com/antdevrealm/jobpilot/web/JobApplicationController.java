@@ -4,6 +4,7 @@ import com.antdevrealm.jobpilot.enums.StatusEnum;
 import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
 import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationDTO;
 import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationResponseDTO;
+import com.antdevrealm.jobpilot.security.model.JobPilotUserDetails;
 import com.antdevrealm.jobpilot.service.JobApplicationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,9 +38,9 @@ public class JobApplicationController {
             @PageableDefault(
                     size = 5,
                     sort = "appliedOn",
-                    direction = Sort.Direction.DESC) Pageable pageable) {
+                    direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal JobPilotUserDetails principal) {
 
-        PaginatedResponse<JobApplicationResponseDTO> result = jobService.searchApplications(
+        PaginatedResponse<JobApplicationResponseDTO> result = jobService.searchApplications(principal.getId(),
                 status, companyName, positionName, pageable);
 
         return ResponseEntity.ok()

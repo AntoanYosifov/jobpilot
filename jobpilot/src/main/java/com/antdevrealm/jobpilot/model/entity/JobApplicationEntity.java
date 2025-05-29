@@ -8,7 +8,6 @@ import lombok.NonNull;
 import java.time.LocalDate;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
@@ -54,4 +53,44 @@ public class JobApplicationEntity {
     @ManyToOne
     @JoinColumn(name = "target_job")
     private JobPostingEntity targetJob;
+
+    public JobApplicationEntity setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public JobApplicationEntity setCompany(@NonNull String company) {
+        this.company = company;
+        return this;
+    }
+
+    public JobApplicationEntity setPosition(@NonNull String position) {
+        this.position = position;
+        return this;
+    }
+
+    public JobApplicationEntity setStatus(@NonNull StatusEnum status) {
+        this.status = status;
+        return this;
+    }
+
+    public JobApplicationEntity setAppliedOn(@NonNull LocalDate appliedOn) {
+        this.appliedOn = appliedOn;
+        return this;
+    }
+
+    public JobApplicationEntity setFeedback(String feedback) {
+        this.feedback = feedback;
+        return this;
+    }
+
+    public JobApplicationEntity setAuthor(UserEntity author) {
+        this.author = author;
+        return this;
+    }
+
+    public JobApplicationEntity setTargetJob(JobPostingEntity targetJob) {
+        this.targetJob = targetJob;
+        return this;
+    }
 }
