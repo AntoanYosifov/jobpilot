@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: jobpilot
+  datasource:
+    url: jdbc:postgresql://localhost:5432/jobpilot_db
+    username: postgres
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret: ${JWT_SECRET_KEY}
+
+adzuna:
+  api:
+    base-url: "https://api.adzuna.com/v1/api/jobs"
+    app-id: ${ADZUNA_APP_ID}
+    app-key: ${ADZUNA_APP_KEY}
+    country: "at"
+    default-results-per-page: 20
+    max-days-old: 1
+    sort-dir: "down"
+    sort-by: "date"
+
+logging:
+  level:
+    org.springframework.web.client.RestClient: DEBUG

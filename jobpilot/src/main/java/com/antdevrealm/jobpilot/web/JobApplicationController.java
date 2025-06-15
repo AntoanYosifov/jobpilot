@@ -29,7 +29,6 @@ public class JobApplicationController {
         this.jobService = jobService;
     }
 
-    // TODO: implement authentication principal and getting the current user specific applications
     @GetMapping
     public ResponseEntity<PaginatedResponse<JobApplicationResponseDTO>> getApplications(
             @RequestParam(required = false) StatusEnum status,
