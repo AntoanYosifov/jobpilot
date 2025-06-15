@@ -3,7 +3,7 @@ package com.antdevrealm.jobpilot.model.dto.jobposting;
 import java.time.ZonedDateTime;
 
 public record JobPostingResponseDTO(
-
+        Long id,
         String title,
         String companyName,
         String locationName,
