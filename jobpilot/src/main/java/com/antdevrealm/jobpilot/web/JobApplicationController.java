@@ -54,18 +54,14 @@ public class JobApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<JobApplicationResponseDTO> create(@RequestBody @Valid JobApplicationDTO dto) {
-        JobApplicationResponseDTO savedApp = jobService.apply(dto);
+    public ResponseEntity<JobApplicationResponseDTO> create(@RequestBody @Valid JobApplicationDTO dto,
+                                                            @AuthenticationPrincipal JobPilotUserDetails principal) {
+        JobApplicationResponseDTO savedApp = jobService.apply(dto, principal.getId());
         URI location = URI.create("/api/applications/" + savedApp.id());
         return ResponseEntity.created(location)
                 .body(savedApp);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<JobApplicationResponseDTO> updateById(@PathVariable Long id, @RequestBody JobApplicationDTO dto) {
-        JobApplicationResponseDTO updated = jobService.updateById(id, dto);
-        return ResponseEntity.ok(updated);
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {

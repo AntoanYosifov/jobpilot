@@ -36,40 +36,40 @@ public class Runner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        UserEntity author1 = userRepo.findByEmail("test@mail.com").orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        UserEntity author2 = userRepo.findByEmail("test2@mail.com").orElseThrow(() -> new ResourceNotFoundException("User not found"));
+//        UserEntity author1 = userRepo.findByEmail("test@mail.com").orElseThrow(() -> new ResourceNotFoundException("User not found"));
+//        UserEntity author2 = userRepo.findByEmail("test2@mail.com").orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        if (jobApplicationRepo.count() == 0) {
-            List<JobApplicationEntity> jobs = List.of(
-                    new JobApplicationEntity("Spotify", "Java Developer", StatusEnum.APPLIED, LocalDate.now().minusDays(10)).setAuthor(author1),
-                    new JobApplicationEntity("Google", "Backend Engineer", StatusEnum.INTERVIEW, LocalDate.now().minusDays(7)).setAuthor(author1),
-                    new JobApplicationEntity("Netflix", "Junior Developer", StatusEnum.REJECTED, LocalDate.now().minusDays(20)).setAuthor(author1),
-                    new JobApplicationEntity("Amazon", "Cloud Java Developer", StatusEnum.APPLIED, LocalDate.now().minusDays(3)).setAuthor(author1),
-                    new JobApplicationEntity("Meta", "Software Engineer", StatusEnum.OFFER, LocalDate.now().minusDays(15)).setAuthor(author1),
-                    new JobApplicationEntity("Apple", "Spring Boot Engineer", StatusEnum.REJECTED, LocalDate.now().minusDays(22)).setAuthor(author1),
-                    new JobApplicationEntity("Microsoft", "Java Backend Intern", StatusEnum.APPLIED, LocalDate.now().minusDays(5)).setAuthor(author1),
-                    new JobApplicationEntity("Dropbox", "Entry-Level Developer", StatusEnum.INTERVIEW, LocalDate.now().minusDays(11)).setAuthor(author1),
-                    new JobApplicationEntity("Oracle", "Java SE Developer", StatusEnum.REJECTED, LocalDate.now().minusDays(30)).setAuthor(author1),
-                    new JobApplicationEntity("Adobe", "Junior API Engineer", StatusEnum.APPLIED, LocalDate.now().minusDays(1)).setAuthor(author1),
-                    new JobApplicationEntity("Spotify", "Java Developer", StatusEnum.APPLIED, LocalDate.now().minusDays(10)).setAuthor(author1),
-                    new JobApplicationEntity("Google", "Backend Engineer", StatusEnum.INTERVIEW, LocalDate.now().minusDays(7)).setAuthor(author2),
-                    new JobApplicationEntity("Netflix", "Junior Developer", StatusEnum.REJECTED, LocalDate.now().minusDays(20)).setAuthor(author2),
-                    new JobApplicationEntity("Amazon", "Cloud Java Developer", StatusEnum.APPLIED, LocalDate.now().minusDays(3)).setAuthor(author2),
-                    new JobApplicationEntity("Meta", "Software Engineer", StatusEnum.OFFER, LocalDate.now().minusDays(15)).setAuthor(author2),
-                    new JobApplicationEntity("Apple", "Spring Boot Engineer", StatusEnum.REJECTED, LocalDate.now().minusDays(22)).setAuthor(author2),
-                    new JobApplicationEntity("Microsoft", "Java Backend Intern", StatusEnum.APPLIED, LocalDate.now().minusDays(5)).setAuthor(author2),
-                    new JobApplicationEntity("Dropbox", "Entry-Level Developer", StatusEnum.INTERVIEW, LocalDate.now().minusDays(11)).setAuthor(author2),
-                    new JobApplicationEntity("Oracle", "Java SE Developer", StatusEnum.REJECTED, LocalDate.now().minusDays(30)).setAuthor(author2),
-                    new JobApplicationEntity("Adobe", "Junior API Engineer", StatusEnum.APPLIED, LocalDate.now().minusDays(1)).setAuthor(author2)
-            );
-
-            jobApplicationRepo.saveAll(jobs);
-            System.out.println("Seeded 20 job applications.");
-        }
-//        try {
-//            jobPostingService.refreshJobPostings();
-//        } catch (ExternalServiceException ex) {
-//            log.error(ex.getMessage(), ex.getCause());
+//        if (jobApplicationRepo.count() == 0) {
+//            List<JobApplicationEntity> jobs = List.of(
+//                    new JobApplicationEntity("Spotify", "Java Developer", StatusEnum.APPLIED, LocalDate.now().minusDays(10)).setAuthor(author1),
+//                    new JobApplicationEntity("Google", "Backend Engineer", StatusEnum.INTERVIEW, LocalDate.now().minusDays(7)).setAuthor(author1),
+//                    new JobApplicationEntity("Netflix", "Junior Developer", StatusEnum.REJECTED, LocalDate.now().minusDays(20)).setAuthor(author1),
+//                    new JobApplicationEntity("Amazon", "Cloud Java Developer", StatusEnum.APPLIED, LocalDate.now().minusDays(3)).setAuthor(author1),
+//                    new JobApplicationEntity("Meta", "Software Engineer", StatusEnum.OFFER, LocalDate.now().minusDays(15)).setAuthor(author1),
+//                    new JobApplicationEntity("Apple", "Spring Boot Engineer", StatusEnum.REJECTED, LocalDate.now().minusDays(22)).setAuthor(author1),
+//                    new JobApplicationEntity("Microsoft", "Java Backend Intern", StatusEnum.APPLIED, LocalDate.now().minusDays(5)).setAuthor(author1),
+//                    new JobApplicationEntity("Dropbox", "Entry-Level Developer", StatusEnum.INTERVIEW, LocalDate.now().minusDays(11)).setAuthor(author1),
+//                    new JobApplicationEntity("Oracle", "Java SE Developer", StatusEnum.REJECTED, LocalDate.now().minusDays(30)).setAuthor(author1),
+//                    new JobApplicationEntity("Adobe", "Junior API Engineer", StatusEnum.APPLIED, LocalDate.now().minusDays(1)).setAuthor(author1),
+//                    new JobApplicationEntity("Spotify", "Java Developer", StatusEnum.APPLIED, LocalDate.now().minusDays(10)).setAuthor(author1),
+//                    new JobApplicationEntity("Google", "Backend Engineer", StatusEnum.INTERVIEW, LocalDate.now().minusDays(7)).setAuthor(author2),
+//                    new JobApplicationEntity("Netflix", "Junior Developer", StatusEnum.REJECTED, LocalDate.now().minusDays(20)).setAuthor(author2),
+//                    new JobApplicationEntity("Amazon", "Cloud Java Developer", StatusEnum.APPLIED, LocalDate.now().minusDays(3)).setAuthor(author2),
+//                    new JobApplicationEntity("Meta", "Software Engineer", StatusEnum.OFFER, LocalDate.now().minusDays(15)).setAuthor(author2),
+//                    new JobApplicationEntity("Apple", "Spring Boot Engineer", StatusEnum.REJECTED, LocalDate.now().minusDays(22)).setAuthor(author2),
+//                    new JobApplicationEntity("Microsoft", "Java Backend Intern", StatusEnum.APPLIED, LocalDate.now().minusDays(5)).setAuthor(author2),
+//                    new JobApplicationEntity("Dropbox", "Entry-Level Developer", StatusEnum.INTERVIEW, LocalDate.now().minusDays(11)).setAuthor(author2),
+//                    new JobApplicationEntity("Oracle", "Java SE Developer", StatusEnum.REJECTED, LocalDate.now().minusDays(30)).setAuthor(author2),
+//                    new JobApplicationEntity("Adobe", "Junior API Engineer", StatusEnum.APPLIED, LocalDate.now().minusDays(1)).setAuthor(author2)
+//            );
+//
+//            jobApplicationRepo.saveAll(jobs);
+//            System.out.println("Seeded 20 job applications.");
 //        }
+        try {
+            jobPostingService.refreshJobPostings();
+        } catch (ExternalServiceException ex) {
+            log.error(ex.getMessage(), ex.getCause());
+        }
     }
 }
