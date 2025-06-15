@@ -80,6 +80,7 @@ public class JobPostingServiceImpl implements JobPostingService {
 
     private static JobPostingResponseDTO mapToResponseDTO(JobPostingEntity entity) {
         return new JobPostingResponseDTO(
+                entity.getId(),
                 entity.getTitle(),
                 entity.getCompanyName(),
                 entity.getLocationName(),

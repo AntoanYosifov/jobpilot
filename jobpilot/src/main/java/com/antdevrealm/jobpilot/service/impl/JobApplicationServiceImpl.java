@@ -6,8 +6,11 @@ import com.antdevrealm.jobpilot.model.dto.PaginatedResponse;
 import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationDTO;
 import com.antdevrealm.jobpilot.model.dto.jobapplication.JobApplicationResponseDTO;
 import com.antdevrealm.jobpilot.model.entity.JobApplicationEntity;
+import com.antdevrealm.jobpilot.model.entity.JobPostingEntity;
+import com.antdevrealm.jobpilot.model.entity.UserEntity;
 import com.antdevrealm.jobpilot.repository.jobapplication.JobApplicationRepository;
 import com.antdevrealm.jobpilot.repository.jobapplication.specification.JobApplicationSpecs;
+import com.antdevrealm.jobpilot.repository.jobposting.JobPostingRepository;
 import com.antdevrealm.jobpilot.repository.user.UserRepository;
 import com.antdevrealm.jobpilot.service.JobApplicationService;
 import com.antdevrealm.jobpilot.util.PaginationUtil;
@@ -25,11 +28,13 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     private final JobApplicationRepository jobAppRepo;
     private final UserRepository userRepo;
+    private final JobPostingRepository jobPostingRepo;
 
     @Autowired
-    public JobApplicationServiceImpl(JobApplicationRepository jobAppRepo, UserRepository userRepo) {
+    public JobApplicationServiceImpl(JobApplicationRepository jobAppRepo, UserRepository userRepo, JobPostingRepository jobPostingRepo) {
         this.jobAppRepo = jobAppRepo;
         this.userRepo = userRepo;
+        this.jobPostingRepo = jobPostingRepo;
     }
 
     @Override
@@ -39,7 +44,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                                                                            String positionName,
                                                                            Pageable pageable) {
 
-         userRepo.findByEmail("test@mail.com").orElseThrow(() -> new ResourceNotFoundException("User not found"));
+         userRepo.findById(authorId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Specification<JobApplicationEntity> spec = Specification.where(JobApplicationSpecs.hasAuthorId(authorId))
                 .and(JobApplicationSpecs.hasStatus(statusEnum))
@@ -61,29 +66,23 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     }
 
     @Override
-    public JobApplicationResponseDTO apply(JobApplicationDTO dto) {
-        JobApplicationEntity saved = jobAppRepo.save(mapToEntity(dto));
-        return mapToResponseDTO(saved);
+    public JobApplicationResponseDTO apply(JobApplicationDTO dto, Long userId) {
+        UserEntity author = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User with ID: " + userId + " not found"));
+
+        JobPostingEntity targetJob = jobPostingRepo.findById(dto.jobPostingId())
+                .orElseThrow(() -> new ResourceNotFoundException("Job Posting with ID: " + dto.jobPostingId() + " not found"));
+
+        return mapToResponseDTO(jobAppRepo.save(mapToEntity(targetJob, author)));
     }
 
-    @Override
-    public JobApplicationResponseDTO updateById(Long id, JobApplicationDTO dto) {
-
-        JobApplicationEntity forUpdate = jobAppRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("JobApplication with ID: " + id + " not found"));
-
-        if (dto.company() != null) {
-            forUpdate.setCompany(dto.company());
-        }
-        if (dto.position() != null) {
-            forUpdate.setPosition(dto.position());
-        }
-        if (dto.status() != null) {
-            forUpdate.setStatus(StatusEnum.valueOf(dto.status().toUpperCase()));
-        }
-
-        JobApplicationEntity updated = jobAppRepo.save(forUpdate);
-        return mapToResponseDTO(updated);
+    private static JobApplicationEntity mapToEntity(JobPostingEntity targetJob, UserEntity author) {
+      return new JobApplicationEntity().setCompany(targetJob.getCompanyName())
+                .setPosition(targetJob.getTitle())
+                .setStatus(StatusEnum.PENDING)
+                .setAppliedOn(LocalDate.now())
+                .setAuthor(author)
+                .setTargetJob(targetJob);
     }
 
 
@@ -107,12 +106,4 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         );
     }
 
-    private JobApplicationEntity mapToEntity(JobApplicationDTO dto) {
-        return new JobApplicationEntity(
-                dto.company(),
-                dto.position(),
-                StatusEnum.valueOf(dto.status().toUpperCase()),
-                LocalDate.now()
-        );
-    }
 }

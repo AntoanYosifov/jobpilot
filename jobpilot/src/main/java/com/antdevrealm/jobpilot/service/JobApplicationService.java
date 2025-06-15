@@ -8,13 +8,12 @@ import org.springframework.data.domain.Pageable;
 
 
 public interface JobApplicationService {
-    JobApplicationResponseDTO apply(JobApplicationDTO dto);
+    JobApplicationResponseDTO apply(JobApplicationDTO dto, Long userId);
 
     JobApplicationResponseDTO getById(Long id);
 
     void deleteById(Long id);
 
-    JobApplicationResponseDTO updateById(Long id, JobApplicationDTO dto);
 
     PaginatedResponse<JobApplicationResponseDTO> searchApplications(Long authorId,
                                                                     StatusEnum statusEnum,
