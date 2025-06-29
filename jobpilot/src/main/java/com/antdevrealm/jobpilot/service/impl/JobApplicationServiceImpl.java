@@ -65,6 +65,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .orElseThrow(() -> new ResourceNotFoundException("JobApplication with ID: " + id + " not found")));
     }
 
+    // TODO: After adding the conformation from the user if he actually applied, add changing the status feature
     @Override
     public JobApplicationResponseDTO apply(JobApplicationDTO dto, Long userId) {
         UserEntity author = userRepo.findById(userId)

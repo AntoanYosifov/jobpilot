@@ -49,11 +49,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        if(shouldNotFilter(request)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String token = getTokenFromRequest(request);
 
         if(token == null) {
